@@ -105,6 +105,9 @@ jobs:
       - name: Install Composer Dependencies
         run: docker compose exec -T app composer install --no-interaction --prefer-dist
       
+      - name: Copy Environment File
+        run: docker compose exec -T app cp .env.example .env
+      
       - name: Generate Application Key
         run: docker compose exec -T app php artisan key:generate
       
