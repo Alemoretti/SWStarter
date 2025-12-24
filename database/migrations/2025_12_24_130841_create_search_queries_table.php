@@ -15,7 +15,7 @@ return new class extends Migration
             $table->integer('results_count')->default(0);
             $table->integer('response_time_ms')->nullable();
             $table->timestamps();
-            
+
             $table->index('created_at');
             $table->index('type');
         });

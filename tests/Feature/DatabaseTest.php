@@ -32,7 +32,7 @@ class DatabaseTest extends TestCase
     {
         $connection = Schema::getConnection();
         $databaseName = $connection->getDatabaseName();
-        
+
         $indexes = $connection->select(
             "SELECT INDEX_NAME 
              FROM information_schema.STATISTICS 
@@ -43,7 +43,7 @@ class DatabaseTest extends TestCase
         );
 
         $indexNames = array_column($indexes, 'INDEX_NAME');
-        
+
         $this->assertContains('search_queries_created_at_index', $indexNames);
         $this->assertContains('search_queries_type_index', $indexNames);
     }

@@ -93,9 +93,15 @@ jobs:
       - name: Start Docker Containers
         run: docker compose up -d
       
-      - name: Wait for Services
+      - name: Wait for MySQL
         run: |
-          timeout 60 bash -c 'until docker compose exec -T app php artisan migrate:status 2>/dev/null; do sleep 2; done' || true
+          timeout 60 bash -c 'until docker compose exec -T mysql mysqladmin ping -h localhost 2>/dev/null; do sleep 2; done'
+      
+      - name: Install Composer Dependencies
+        run: docker compose exec -T app composer install --no-interaction --prefer-dist
+      
+      - name: Generate Application Key
+        run: docker compose exec -T app php artisan key:generate
       
       - name: Run Health Checks
         run: |
