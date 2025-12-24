@@ -93,9 +93,23 @@ jobs:
       - name: Start Docker Containers
         run: docker compose up -d
       
-      - name: Wait for Services
+      - name: Wait for MySQL
         run: |
-          timeout 60 bash -c 'until docker compose exec -T app php artisan migrate:status 2>/dev/null; do sleep 2; done' || true
+          timeout 60 bash -c 'until docker compose exec -T mysql mysqladmin ping -h localhost 2>/dev/null; do sleep 2; done'
+      
+      - name: Fix Permissions and Git Config
+        run: |
+          docker compose exec -T -u root app chown -R www-data:www-data /var/www/html
+          docker compose exec -T -u root app git config --global --add safe.directory /var/www/html
+      
+      - name: Install Composer Dependencies
+        run: docker compose exec -T app composer install --no-interaction --prefer-dist
+      
+      - name: Copy Environment File
+        run: docker compose exec -T app cp .env.example .env
+      
+      - name: Generate Application Key
+        run: docker compose exec -T app php artisan key:generate
       
       - name: Run Health Checks
         run: |
@@ -116,3 +130,4 @@ jobs:
       
       - name: Validate docker-compose.yml
         run: docker compose config
+
