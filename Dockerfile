@@ -18,9 +18,15 @@ RUN apt-get update && apt-get install -y \
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Install Node.js 20
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs
+# Install Node.js 24 LTS (latest LTS) and update npm to latest
+RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g npm@latest
+
+# Set npm cache directory and fix permissions for www-data user
+RUN mkdir -p /var/www/.npm && \
+    chown -R www-data:www-data /var/www/.npm && \
+    npm config set cache /var/www/.npm --global
 
 # Copy existing application directory permissions
 RUN chown -R www-data:www-data /var/www/html

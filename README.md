@@ -58,7 +58,7 @@ docker compose exec app npm run build
 
 ### Running Tests
 ```bash
-docker compose exec app ./vendor/bin/pest
+docker compose exec app php artisan test
 ```
 
 ### Running Frontend Dev Server
