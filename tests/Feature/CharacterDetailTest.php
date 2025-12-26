@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
@@ -69,10 +70,12 @@ class CharacterDetailTest extends TestCase
     public function test_character_detail_handles_api_errors(): void
     {
         Http::fake([
-            'https://swapi.dev/api/people/1' => Http::response([], 500),
+            '*/api/people/2' => Http::response([
+                'error' => 'Internal Server Error'
+            ], 500),
         ]);
 
-        $response = $this->getJson('/api/v1/characters/1');
+        $response = $this->getJson('/api/v1/characters/2');
 
         $response->assertStatus(500);
     }

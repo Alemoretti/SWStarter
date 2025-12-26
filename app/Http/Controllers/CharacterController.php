@@ -24,9 +24,22 @@ class CharacterController extends Controller
                 'data' => new CharacterResource($character)
             ]);
         } catch (\Exception $e) {
+            $statusCode = 404;
+            $message = 'Character not found';
+            
+            // Extract status code from exception message (format: "Failed to fetch character: 500")
+            if (preg_match('/: (\d+)$/', $e->getMessage(), $matches)) {
+                $statusCode = (int) $matches[1];
+                if ($statusCode >= 500) {
+                    $message = 'External API error';
+                } elseif ($statusCode === 404) {
+                    $message = 'Character not found';
+                }
+            }
+            
             return response()->json([
-                'error' => 'Character not found'
-            ], 404);
+                'error' => $message
+            ], $statusCode);
         }
     }
 }
