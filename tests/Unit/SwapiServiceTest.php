@@ -5,7 +5,6 @@ namespace Tests\Unit;
 use App\DTOs\CharacterDto;
 use App\DTOs\MovieDto;
 use App\Services\SwapiService;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
@@ -79,7 +78,7 @@ class SwapiServiceTest extends TestCase
         Http::assertSentCount(1);
     }
 
-    public function test_search_films_returns_movie_dtos(): void
+    public function test_search_movies_returns_movie_dtos(): void
     {
         Http::fake([
             '*/api/films*' => Http::response([
@@ -92,7 +91,7 @@ class SwapiServiceTest extends TestCase
         ]);
 
         $service = new SwapiService;
-        $results = $service->searchFilms('hope');
+        $results = $service->searchFilms('hope'); // Method name uses "Films" because SWAPI endpoint is /films
 
         $this->assertIsArray($results);
         $this->assertCount(1, $results);

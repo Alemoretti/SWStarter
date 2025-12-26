@@ -40,7 +40,7 @@ class SearchControllerTest extends TestCase
             ]);
     }
 
-    public function test_search_films_returns_movie_resources(): void
+    public function test_search_movies_returns_movie_resources(): void
     {
         Http::fake([
             '*/api/films*' => Http::response([
@@ -54,7 +54,7 @@ class SearchControllerTest extends TestCase
 
         $response = $this->postJson('/api/v1/search', [
             'query' => 'hope',
-            'type' => 'films',
+            'type' => 'movies',
         ]);
 
         $response->assertStatus(200)
@@ -85,7 +85,7 @@ class SearchControllerTest extends TestCase
             ->assertJsonValidationErrors(['type']);
     }
 
-    public function test_search_validates_type_must_be_people_or_films(): void
+    public function test_search_validates_type_must_be_people_or_movies(): void
     {
         $response = $this->postJson('/api/v1/search', [
             'query' => 'luke',

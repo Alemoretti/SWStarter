@@ -106,6 +106,25 @@ class SwapiService
     }
 
     /**
+     * Get a single movie by ID.
+     */
+    public function getMovieById(int $id): MovieDto
+    {
+        $baseUrl = $this->getBaseUrl();
+        $response = Cache::remember("swapi_films_{$id}", 3600, function () use ($id, $baseUrl) {
+            $response = Http::get("{$baseUrl}/films/{$id}");
+
+            if ($response->failed()) {
+                throw new \Exception("Failed to fetch movie: {$response->status()}");
+            }
+
+            return $response->json();
+        });
+
+        return MovieDto::fromSwapi($response);
+    }
+
+    /**
      * Get a movie by URL from SWAPI.
      */
     public function getMovie(string $url): ?MovieDto

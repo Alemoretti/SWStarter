@@ -17,7 +17,7 @@ class SearchController extends Controller
     ) {}
 
     /**
-     * Search for people or films.
+     * Search for people or movies.
      */
     public function search(SearchRequest $request): JsonResponse
     {
