@@ -11,6 +11,7 @@ use Inertia\Inertia;
 Route::get('/', function () {
     return Inertia::render('Search/Index');
 });
+Route::get('/characters/{id}', [CharacterController::class, 'show']);
 Route::get('/api/v1/characters/{id}', [CharacterController::class, 'show']);
 Route::get('/api/v1/movies/{id}', [MovieController::class, 'show']);
 Route::get('/api/v1/statistics', [StatisticsController::class, 'index']);
