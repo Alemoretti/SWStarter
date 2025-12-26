@@ -22,19 +22,19 @@ class SearchController extends Controller
     public function search(SearchRequest $request): JsonResponse
     {
         $startTime = microtime(true);
-        
+
         $query = $request->validated()['query'];
         $type = $request->validated()['type'];
 
         if ($type === 'people') {
             $results = $this->swapiService->searchPeople($query);
             $response = response()->json([
-                'data' => CharacterResource::collection($results)
+                'data' => CharacterResource::collection($results),
             ]);
         } else {
             $results = $this->swapiService->searchMovies($query);
             $response = response()->json([
-                'data' => MovieResource::collection($results)
+                'data' => MovieResource::collection($results),
             ]);
         }
 
