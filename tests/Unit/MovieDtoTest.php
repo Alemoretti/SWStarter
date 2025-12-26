@@ -2,14 +2,14 @@
 
 namespace Tests\Unit;
 
-use App\DTOs\FilmDto;
+use App\DTOs\MovieDto;
 use Tests\TestCase;
 
-class FilmDtoTest extends TestCase
+class MovieDtoTest extends TestCase
 {
-    public function test_film_dto_can_be_created(): void
+    public function test_movie_dto_can_be_created(): void
     {
-        $dto = new FilmDto(
+        $dto = new MovieDto(
             title: 'A New Hope',
             openingCrawl: 'It is a period of civil war...',
             characters: ['https://swapi.dev/api/people/1/']
@@ -20,7 +20,7 @@ class FilmDtoTest extends TestCase
         $this->assertIsArray($dto->characters);
     }
 
-    public function test_film_dto_can_be_created_from_swapi_data(): void
+    public function test_movie_dto_can_be_created_from_swapi_data(): void
     {
         $swapiData = [
             'title' => 'A New Hope',
@@ -28,20 +28,20 @@ class FilmDtoTest extends TestCase
             'characters' => ['https://swapi.dev/api/people/1/'],
         ];
 
-        $dto = FilmDto::fromSwapi($swapiData);
+        $dto = MovieDto::fromSwapi($swapiData);
 
         $this->assertEquals('A New Hope', $dto->title);
         $this->assertStringContainsString('civil war', $dto->openingCrawl);
     }
 
-    public function test_film_dto_handles_missing_characters(): void
+    public function test_movie_dto_handles_missing_characters(): void
     {
         $swapiData = [
             'title' => 'A New Hope',
             'opening_crawl' => 'It is a period of civil war...',
         ];
 
-        $dto = FilmDto::fromSwapi($swapiData);
+        $dto = MovieDto::fromSwapi($swapiData);
 
         $this->assertIsArray($dto->characters);
         $this->assertEmpty($dto->characters);

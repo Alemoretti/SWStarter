@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\DTOs\CharacterDto;
-use App\DTOs\FilmDto;
+use App\DTOs\MovieDto;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
@@ -54,7 +54,7 @@ class SwapiService
     /**
      * Search for films in SWAPI.
      *
-     * @return array<int, FilmDto>
+     * @return array<int, MovieDto>
      */
     public function searchFilms(string $query): array
     {
@@ -68,7 +68,7 @@ class SwapiService
     /**
      * Fetch films from SWAPI.
      *
-     * @return array<int, FilmDto>
+     * @return array<int, MovieDto>
      */
     private function fetchFilms(string $query): array
     {
@@ -81,7 +81,7 @@ class SwapiService
         $data = $response->json();
 
         return array_map(
-            fn ($item) => FilmDto::fromSwapi($item),
+            fn ($item) => MovieDto::fromSwapi($item),
             $data['results'] ?? []
         );
     }
@@ -108,7 +108,7 @@ class SwapiService
     /**
      * Get a single movie by ID.
      */
-    public function getMovieById(int $id): FilmDto
+    public function getMovieById(int $id): MovieDto
     {
         $baseUrl = $this->getBaseUrl();
         $response = Cache::remember("swapi_films_{$id}", 3600, function () use ($id, $baseUrl) {
@@ -121,13 +121,13 @@ class SwapiService
             return $response->json();
         });
 
-        return FilmDto::fromSwapi($response);
+        return MovieDto::fromSwapi($response);
     }
 
     /**
      * Get a movie by URL from SWAPI.
      */
-    public function getMovie(string $url): ?FilmDto
+    public function getMovie(string $url): ?MovieDto
     {
         $response = Http::get($url);
 
@@ -135,6 +135,6 @@ class SwapiService
             return null;
         }
 
-        return FilmDto::fromSwapi($response->json());
+        return MovieDto::fromSwapi($response->json());
     }
 }

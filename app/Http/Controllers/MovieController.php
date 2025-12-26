@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\FilmResource;
+use App\Http\Resources\MovieResource;
 use App\Services\SwapiService;
 use Illuminate\Http\JsonResponse;
 
@@ -21,7 +21,7 @@ class MovieController extends Controller
             $movie = $this->swapiService->getMovieById($id);
 
             return response()->json([
-                'data' => new FilmResource($movie),
+                'data' => new MovieResource($movie),
             ]);
         } catch (\Exception $e) {
             $statusCode = 404;

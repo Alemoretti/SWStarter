@@ -2,11 +2,11 @@
 
 namespace App\Http\Resources;
 
-use App\DTOs\FilmDto;
+use App\DTOs\MovieDto;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FilmResource extends JsonResource
+class MovieResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,7 +15,7 @@ class FilmResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        /** @var FilmDto $dto */
+        /** @var MovieDto $dto */
         $dto = $this->resource;
 
         return [

@@ -20,7 +20,7 @@ class MovieDetailTest extends TestCase
             ], 200),
         ]);
 
-        $response = $this->getJson('/api/v1/films/1');
+        $response = $this->getJson('/api/v1/movies/1');
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -46,7 +46,7 @@ class MovieDetailTest extends TestCase
             ], 404),
         ]);
 
-        $response = $this->getJson('/api/v1/films/999');
+        $response = $this->getJson('/api/v1/movies/999');
 
         $response->assertStatus(404);
     }
@@ -59,7 +59,7 @@ class MovieDetailTest extends TestCase
             ], 500),
         ]);
 
-        $response = $this->getJson('/api/v1/films/1');
+        $response = $this->getJson('/api/v1/movies/1');
 
         $response->assertStatus(500);
     }
