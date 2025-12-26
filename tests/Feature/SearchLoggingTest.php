@@ -24,8 +24,8 @@ class SearchLoggingTest extends TestCase
                     'height' => '172',
                     'mass' => '77',
                     'films' => [],
-                ]]
-            ], 200)
+                ]],
+            ], 200),
         ]);
 
         $this->postJson('/api/v1/search', [
@@ -44,8 +44,8 @@ class SearchLoggingTest extends TestCase
     {
         Http::fake([
             'https://swapi.dev/api/people*' => Http::response([
-                'results' => []
-            ], 200)
+                'results' => [],
+            ], 200),
         ]);
 
         $this->postJson('/api/v1/search', [
@@ -65,8 +65,8 @@ class SearchLoggingTest extends TestCase
                 'results' => [
                     ['name' => 'Luke', 'birth_year' => '19BBY', 'gender' => 'male', 'eye_color' => 'blue', 'hair_color' => 'blond', 'height' => '172', 'mass' => '77', 'films' => []],
                     ['name' => 'Yoda', 'birth_year' => '896BBY', 'gender' => 'male', 'eye_color' => 'brown', 'hair_color' => 'white', 'height' => '66', 'mass' => '17', 'films' => []],
-                ]
-            ], 200)
+                ],
+            ], 200),
         ]);
 
         $this->postJson('/api/v1/search', [
@@ -84,8 +84,8 @@ class SearchLoggingTest extends TestCase
     {
         Http::fake([
             'https://swapi.dev/api/films*' => Http::response([
-                'results' => []
-            ], 200)
+                'results' => [],
+            ], 200),
         ]);
 
         $this->postJson('/api/v1/search', [
