@@ -122,6 +122,8 @@ jobs:
       
       - name: Run Vitest
         run: npm run test -- --run
+        env:
+          LARAVEL_BYPASS_ENV_CHECK: 1
 
   docker-build:
     name: Build and Test Docker Containers
