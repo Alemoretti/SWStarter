@@ -19,7 +19,7 @@ class RecomputeStatisticsJobTest extends TestCase
         SearchQuery::create(['query' => 'luke', 'type' => 'people', 'results_count' => 3, 'response_time_ms' => 150]);
 
         $job = new RecomputeStatisticsJob;
-        $job->handle();
+        app()->call([$job, 'handle']);
 
         $statistic = SearchStatistic::latest('computed_at')->first();
 
@@ -37,7 +37,7 @@ class RecomputeStatisticsJobTest extends TestCase
         $initialCount = SearchStatistic::count();
 
         $job = new RecomputeStatisticsJob;
-        $job->handle();
+        app()->call([$job, 'handle']);
 
         $this->assertEquals($initialCount + 1, SearchStatistic::count());
     }
@@ -45,7 +45,7 @@ class RecomputeStatisticsJobTest extends TestCase
     public function test_job_handles_empty_data(): void
     {
         $job = new RecomputeStatisticsJob;
-        $job->handle();
+        app()->call([$job, 'handle']);
 
         $statistic = SearchStatistic::latest('computed_at')->first();
 
