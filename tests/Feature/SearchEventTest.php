@@ -17,7 +17,7 @@ class SearchEventTest extends TestCase
         Event::fake();
 
         Http::fake([
-            'https://swapi.dev/api/people*' => Http::response([
+            '*/api/people*' => Http::response([
                 'results' => [],
             ], 200),
         ]);
@@ -39,7 +39,7 @@ class SearchEventTest extends TestCase
         Event::fake();
 
         Http::fake([
-            'https://swapi.dev/api/people*' => Http::response([
+            '*/api/people*' => Http::response([
                 'results' => [[
                     'name' => 'Luke Skywalker',
                     'birth_year' => '19BBY',

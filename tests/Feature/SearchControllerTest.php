@@ -13,7 +13,7 @@ class SearchControllerTest extends TestCase
     public function test_search_people_returns_character_resources(): void
     {
         Http::fake([
-            'https://swapi.dev/api/people*' => Http::response([
+            '*/api/people*' => Http::response([
                 'results' => [[
                     'name' => 'Luke Skywalker',
                     'birth_year' => '19BBY',
@@ -43,7 +43,7 @@ class SearchControllerTest extends TestCase
     public function test_search_films_returns_movie_resources(): void
     {
         Http::fake([
-            'https://swapi.dev/api/films*' => Http::response([
+            '*/api/films*' => Http::response([
                 'results' => [[
                     'title' => 'A New Hope',
                     'opening_crawl' => 'It is a period of civil war...',
@@ -99,7 +99,7 @@ class SearchControllerTest extends TestCase
     public function test_search_returns_empty_array_when_no_results(): void
     {
         Http::fake([
-            'https://swapi.dev/api/people*' => Http::response([
+            '*/api/people*' => Http::response([
                 'results' => [],
             ], 200),
         ]);

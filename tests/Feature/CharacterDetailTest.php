@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
@@ -71,7 +70,7 @@ class CharacterDetailTest extends TestCase
     {
         Http::fake([
             '*/api/people/2' => Http::response([
-                'error' => 'Internal Server Error'
+                'error' => 'Internal Server Error',
             ], 500),
         ]);
 

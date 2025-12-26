@@ -14,7 +14,7 @@ class SwapiServiceTest extends TestCase
     public function test_search_people_returns_character_dtos(): void
     {
         Http::fake([
-            'https://swapi.dev/api/people*' => Http::response([
+            '*/api/people*' => Http::response([
                 'results' => [[
                     'name' => 'Luke Skywalker',
                     'birth_year' => '19BBY',
@@ -40,7 +40,7 @@ class SwapiServiceTest extends TestCase
     public function test_search_people_returns_empty_array_on_api_error(): void
     {
         Http::fake([
-            'https://swapi.dev/api/people*' => Http::response([], 500),
+            '*/api/people*' => Http::response([], 500),
         ]);
 
         $service = new SwapiService;
@@ -53,7 +53,7 @@ class SwapiServiceTest extends TestCase
     public function test_search_people_caches_results(): void
     {
         Http::fake([
-            'https://swapi.dev/api/people*' => Http::response([
+            '*/api/people*' => Http::response([
                 'results' => [[
                     'name' => 'Luke Skywalker',
                     'birth_year' => '19BBY',
@@ -82,7 +82,7 @@ class SwapiServiceTest extends TestCase
     public function test_search_films_returns_movie_dtos(): void
     {
         Http::fake([
-            'https://swapi.dev/api/films*' => Http::response([
+            '*/api/films*' => Http::response([
                 'results' => [[
                     'title' => 'A New Hope',
                     'opening_crawl' => 'It is a period of civil war...',
@@ -103,7 +103,7 @@ class SwapiServiceTest extends TestCase
     public function test_get_character_returns_character_dto(): void
     {
         Http::fake([
-            'https://swapi.dev/api/people/1/' => Http::response([
+            '*/api/people/1' => Http::response([
                 'name' => 'Luke Skywalker',
                 'birth_year' => '19BBY',
                 'gender' => 'male',
@@ -116,22 +116,24 @@ class SwapiServiceTest extends TestCase
         ]);
 
         $service = new SwapiService;
-        $character = $service->getCharacter('https://swapi.dev/api/people/1/');
+        $character = $service->getCharacter(1);
 
         $this->assertInstanceOf(CharacterDto::class, $character);
         $this->assertEquals('Luke Skywalker', $character->name);
     }
 
-    public function test_get_character_returns_null_on_error(): void
+    public function test_get_character_throws_exception_on_error(): void
     {
         Http::fake([
-            'https://swapi.dev/api/people/1/' => Http::response([], 404),
+            '*/api/people/1' => Http::response([], 404),
         ]);
 
         $service = new SwapiService;
-        $character = $service->getCharacter('https://swapi.dev/api/people/1/');
 
-        $this->assertNull($character);
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('404');
+
+        $service->getCharacter(1);
     }
 
     public function test_get_movie_returns_movie_dto(): void

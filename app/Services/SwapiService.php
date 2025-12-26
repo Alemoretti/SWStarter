@@ -94,11 +94,11 @@ class SwapiService
         $baseUrl = $this->getBaseUrl();
         $response = Cache::remember("swapi_people_{$id}", 3600, function () use ($id, $baseUrl) {
             $response = Http::get("{$baseUrl}/people/{$id}");
-            
+
             if ($response->failed()) {
                 throw new \Exception("Failed to fetch character: {$response->status()}");
             }
-            
+
             return $response->json();
         });
 
