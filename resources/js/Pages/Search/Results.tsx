@@ -23,7 +23,7 @@ export default function SearchResults({ query, type, results, resultsCount }: Pr
                 </h1>
 
                 <p className="text-gray-600 mb-6">
-                    Found {resultsCount} result{resultsCount !== 1 ? 's' : ''} for "{query}"
+                    Found {resultsCount} result{resultsCount !== 1 ? 's' : ''} for &quot;{query}&quot;
                 </p>
 
                 {resultsCount === 0 ? (

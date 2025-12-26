@@ -6,6 +6,7 @@
         "build": "vite build",
         "dev": "vite",
         "lint": "eslint . --ext js,jsx,ts,tsx --report-unused-disable-directives --max-warnings 0",
+        "lint:fix": "eslint . --ext js,jsx,ts,tsx --fix",
         "test": "vitest",
         "test:ui": "vitest --ui"
     },
