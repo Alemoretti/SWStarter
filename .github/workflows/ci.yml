@@ -89,6 +89,40 @@ jobs:
           DB_USERNAME: root
           DB_PASSWORD: password
 
+  lint-frontend:
+    name: Lint Frontend (ESLint)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      
+      - name: Install NPM Dependencies
+        run: npm ci
+      
+      - name: Run ESLint
+        run: npm run lint
+
+  test-frontend:
+    name: Test Frontend (Vitest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      
+      - name: Install NPM Dependencies
+        run: npm ci
+      
+      - name: Run Vitest
+        run: npm run test -- --run
+
   docker-build:
     name: Build and Test Docker Containers
     runs-on: ubuntu-latest
