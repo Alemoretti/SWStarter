@@ -68,6 +68,17 @@ jobs:
           DB_USERNAME: root
           DB_PASSWORD: password
       
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      
+      - name: Install NPM Dependencies
+        run: npm ci
+      
+      - name: Build Frontend Assets
+        run: npm run build
+      
       - name: Run PHPUnit Tests
         run: php artisan test --coverage --min=80 || php artisan test
         env:
