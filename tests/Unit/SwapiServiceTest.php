@@ -14,7 +14,7 @@ class SwapiServiceTest extends TestCase
     public function test_search_people_returns_character_dtos(): void
     {
         Http::fake([
-            'swapi.dev/api/people/*' => Http::response([
+            'https://swapi.dev/api/people*' => Http::response([
                 'results' => [[
                     'name' => 'Luke Skywalker',
                     'birth_year' => '19BBY',
@@ -40,7 +40,7 @@ class SwapiServiceTest extends TestCase
     public function test_search_people_returns_empty_array_on_api_error(): void
     {
         Http::fake([
-            'swapi.dev/api/people/*' => Http::response([], 500),
+            'https://swapi.dev/api/people*' => Http::response([], 500),
         ]);
 
         $service = new SwapiService;
@@ -53,7 +53,7 @@ class SwapiServiceTest extends TestCase
     public function test_search_people_caches_results(): void
     {
         Http::fake([
-            'swapi.dev/api/people/*' => Http::response([
+            'https://swapi.dev/api/people*' => Http::response([
                 'results' => [[
                     'name' => 'Luke Skywalker',
                     'birth_year' => '19BBY',
@@ -82,7 +82,7 @@ class SwapiServiceTest extends TestCase
     public function test_search_movies_returns_movie_dtos(): void
     {
         Http::fake([
-            'swapi.dev/api/films/*' => Http::response([
+            'https://swapi.dev/api/films*' => Http::response([
                 'results' => [[
                     'title' => 'A New Hope',
                     'opening_crawl' => 'It is a period of civil war...',
@@ -103,7 +103,7 @@ class SwapiServiceTest extends TestCase
     public function test_get_character_returns_character_dto(): void
     {
         Http::fake([
-            'swapi.dev/api/people/1/' => Http::response([
+            'https://swapi.dev/api/people/1/' => Http::response([
                 'name' => 'Luke Skywalker',
                 'birth_year' => '19BBY',
                 'gender' => 'male',
@@ -125,7 +125,7 @@ class SwapiServiceTest extends TestCase
     public function test_get_character_returns_null_on_error(): void
     {
         Http::fake([
-            'swapi.dev/api/people/1/' => Http::response([], 404),
+            'https://swapi.dev/api/people/1/' => Http::response([], 404),
         ]);
 
         $service = new SwapiService;
@@ -137,7 +137,7 @@ class SwapiServiceTest extends TestCase
     public function test_get_movie_returns_movie_dto(): void
     {
         Http::fake([
-            'swapi.dev/api/films/1/' => Http::response([
+            'https://swapi.dev/api/films/1/' => Http::response([
                 'title' => 'A New Hope',
                 'opening_crawl' => 'It is a period of civil war...',
                 'characters' => [],
