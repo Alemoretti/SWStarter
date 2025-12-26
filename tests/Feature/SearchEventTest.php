@@ -18,8 +18,8 @@ class SearchEventTest extends TestCase
 
         Http::fake([
             'https://swapi.dev/api/people*' => Http::response([
-                'results' => []
-            ], 200)
+                'results' => [],
+            ], 200),
         ]);
 
         $this->postJson('/api/v1/search', [
@@ -28,7 +28,7 @@ class SearchEventTest extends TestCase
         ]);
 
         Event::assertDispatched(SearchPerformed::class, function ($event) {
-            return $event->query === 'luke' 
+            return $event->query === 'luke'
                 && $event->type === 'people'
                 && $event->resultsCount === 0;
         });
@@ -49,8 +49,8 @@ class SearchEventTest extends TestCase
                     'height' => '172',
                     'mass' => '77',
                     'films' => [],
-                ]]
-            ], 200)
+                ]],
+            ], 200),
         ]);
 
         $this->postJson('/api/v1/search', [
@@ -59,7 +59,7 @@ class SearchEventTest extends TestCase
         ]);
 
         Event::assertDispatched(SearchPerformed::class, function ($event) {
-            return $event->query === 'test' 
+            return $event->query === 'test'
                 && $event->type === 'people'
                 && $event->resultsCount === 1;
         });
