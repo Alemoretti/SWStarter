@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SearchPerformed;
 use App\Http\Requests\SearchRequest;
 use App\Http\Resources\CharacterResource;
 use App\Http\Resources\MovieResource;
@@ -21,30 +22,33 @@ class SearchController extends Controller
     public function search(SearchRequest $request): JsonResponse
     {
         $startTime = microtime(true);
-
+        
         $query = $request->validated()['query'];
         $type = $request->validated()['type'];
 
         if ($type === 'people') {
             $results = $this->swapiService->searchPeople($query);
             $response = response()->json([
-                'data' => CharacterResource::collection($results),
+                'data' => CharacterResource::collection($results)
             ]);
         } else {
             $results = $this->swapiService->searchMovies($query);
             $response = response()->json([
-                'data' => MovieResource::collection($results),
+                'data' => MovieResource::collection($results)
             ]);
         }
 
         $responseTime = (int) ((microtime(true) - $startTime) * 1000);
+        $resultsCount = count($results);
 
         SearchQuery::create([
             'query' => $query,
             'type' => $type,
-            'results_count' => count($results),
+            'results_count' => $resultsCount,
             'response_time_ms' => $responseTime,
         ]);
+
+        event(new SearchPerformed($query, $type, $resultsCount));
 
         return $response;
     }
