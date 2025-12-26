@@ -8,6 +8,5 @@ class StatisticsDto
         public readonly array $topQueries,
         public readonly ?float $avgResponseTime,
         public readonly ?int $popularHour,
-        public readonly \DateTime $computedAt,
     ) {}
 }
