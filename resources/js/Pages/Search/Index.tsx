@@ -105,7 +105,7 @@ export default function SearchIndex({ query: initialQuery = '', type: initialTyp
                                     className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                                         errors.query ? 'border-red-500' : 'border-gray-300'
                                     }`}
-                                    placeholder="Enter search term..."
+                                    placeholder={type === 'people' ? 'e.g. Chewbacca, Yoda, Boba Fett' : 'e.g. A New Hope, Empire Strikes Back'}
                                     disabled={isLoading}
                                 />
                                 {errors.query && (
