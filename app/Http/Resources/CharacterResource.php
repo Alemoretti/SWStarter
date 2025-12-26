@@ -19,13 +19,14 @@ class CharacterResource extends JsonResource
         $dto = $this->resource;
 
         return [
-            'name' => $dto->name,
-            'birth_year' => $dto->birthYear,
-            'gender' => $dto->gender,
-            'eye_color' => $dto->eyeColor,
-            'hair_color' => $dto->hairColor,
-            'height' => $dto->height,
-            'mass' => $dto->mass,
+            'name' => $this->name,
+            'birth_year' => $this->birthYear,
+            'gender' => $this->gender,
+            'eye_color' => $this->eyeColor,
+            'hair_color' => $this->hairColor,
+            'height' => $this->height,
+            'mass' => $this->mass,
+            'films' => $this->films,
         ];
     }
 }

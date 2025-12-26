@@ -45,7 +45,7 @@ class SearchQueryTest extends TestCase
     {
         $query = SearchQuery::create([
             'query' => 'test',
-            'type' => 'movies',
+            'type' => 'films',
             'results_count' => '10', // String input
             'response_time_ms' => '200', // String input
         ]);

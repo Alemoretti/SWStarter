@@ -50,7 +50,7 @@ class SearchRequestTest extends TestCase
         $this->assertTrue($validator->fails());
     }
 
-    public function test_search_request_validates_type_must_be_people_or_movies(): void
+    public function test_search_request_validates_type_must_be_people_or_films(): void
     {
         $request = new SearchRequest;
         $rules = $request->rules();
@@ -73,14 +73,14 @@ class SearchRequestTest extends TestCase
         $this->assertFalse($validator->fails());
     }
 
-    public function test_search_request_passes_with_movies_type(): void
+    public function test_search_request_passes_with_films_type(): void
     {
         $request = new SearchRequest;
         $rules = $request->rules();
 
         $validator = Validator::make([
             'query' => 'hope',
-            'type' => 'movies',
+            'type' => 'films',
         ], $rules);
 
         $this->assertFalse($validator->fails());

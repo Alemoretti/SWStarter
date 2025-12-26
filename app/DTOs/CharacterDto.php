@@ -12,7 +12,7 @@ class CharacterDto
         public readonly string $hairColor,
         public readonly ?int $height,
         public readonly ?int $mass,
-        public readonly array $movies,
+        public readonly array $films,
     ) {}
 
     public static function fromSwapi(array $data): self
@@ -25,7 +25,7 @@ class CharacterDto
             hairColor: $data['hair_color'],
             height: $data['height'] === 'unknown' ? null : (int) $data['height'],
             mass: $data['mass'] === 'unknown' ? null : (int) str_replace(',', '', $data['mass']),
-            movies: $data['films'] ?? [],
+            films: $data['films'] ?? [],
         );
     }
 }

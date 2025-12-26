@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('search_queries', function (Blueprint $table) {
             $table->id();
             $table->string('query');
-            $table->enum('type', ['people', 'movies']);
+            $table->enum('type', ['people', 'films']);
             $table->integer('results_count')->default(0);
             $table->integer('response_time_ms')->nullable();
             $table->timestamps();

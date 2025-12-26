@@ -52,25 +52,25 @@ class SwapiService
     }
 
     /**
-     * Search for movies in SWAPI.
+     * Search for films in SWAPI.
      *
      * @return array<int, MovieDto>
      */
-    public function searchMovies(string $query): array
+    public function searchFilms(string $query): array
     {
         return Cache::remember(
-            "swapi.movies.search.{$query}",
+            "swapi.films.search.{$query}",
             self::CACHE_TTL,
-            fn () => $this->fetchMovies($query)
+            fn () => $this->fetchFilms($query)
         );
     }
 
     /**
-     * Fetch movies from SWAPI.
+     * Fetch films from SWAPI.
      *
      * @return array<int, MovieDto>
      */
-    private function fetchMovies(string $query): array
+    private function fetchFilms(string $query): array
     {
         $response = Http::get($this->getBaseUrl().'/films', ['search' => $query]);
 

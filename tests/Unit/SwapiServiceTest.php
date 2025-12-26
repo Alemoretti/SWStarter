@@ -79,7 +79,7 @@ class SwapiServiceTest extends TestCase
         Http::assertSentCount(1);
     }
 
-    public function test_search_movies_returns_movie_dtos(): void
+    public function test_search_films_returns_movie_dtos(): void
     {
         Http::fake([
             'https://swapi.dev/api/films*' => Http::response([
@@ -92,7 +92,7 @@ class SwapiServiceTest extends TestCase
         ]);
 
         $service = new SwapiService;
-        $results = $service->searchMovies('hope');
+        $results = $service->searchFilms('hope');
 
         $this->assertIsArray($results);
         $this->assertCount(1, $results);

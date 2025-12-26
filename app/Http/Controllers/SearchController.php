@@ -17,7 +17,7 @@ class SearchController extends Controller
     ) {}
 
     /**
-     * Search for people or movies.
+     * Search for people or films.
      */
     public function search(SearchRequest $request): JsonResponse
     {
@@ -32,7 +32,7 @@ class SearchController extends Controller
                 'data' => CharacterResource::collection($results),
             ]);
         } else {
-            $results = $this->swapiService->searchMovies($query);
+            $results = $this->swapiService->searchFilms($query);
             $response = response()->json([
                 'data' => MovieResource::collection($results),
             ]);

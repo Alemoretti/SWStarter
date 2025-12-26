@@ -80,7 +80,7 @@ class SearchLoggingTest extends TestCase
         ]);
     }
 
-    public function test_search_logs_movies_type(): void
+    public function test_search_logs_films_type(): void
     {
         Http::fake([
             'https://swapi.dev/api/films*' => Http::response([
@@ -90,12 +90,12 @@ class SearchLoggingTest extends TestCase
 
         $this->postJson('/api/v1/search', [
             'query' => 'hope',
-            'type' => 'movies',
+            'type' => 'films',
         ]);
 
         $this->assertDatabaseHas('search_queries', [
             'query' => 'hope',
-            'type' => 'movies',
+            'type' => 'films',
         ]);
     }
 }
