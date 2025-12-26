@@ -10,6 +10,7 @@ class CharacterDtoTest extends TestCase
     public function test_character_dto_can_be_created(): void
     {
         $dto = new CharacterDto(
+            id: 1,
             name: 'Luke Skywalker',
             birthYear: '19BBY',
             gender: 'male',
@@ -33,6 +34,7 @@ class CharacterDtoTest extends TestCase
     public function test_character_dto_can_be_created_from_swapi_data(): void
     {
         $swapiData = [
+            'url' => 'https://swapi.dev/api/people/1/',
             'name' => 'Luke Skywalker',
             'birth_year' => '19BBY',
             'gender' => 'male',
@@ -54,6 +56,7 @@ class CharacterDtoTest extends TestCase
     public function test_character_dto_handles_unknown_values(): void
     {
         $swapiData = [
+            'url' => 'https://swapi.dev/api/people/2/',
             'name' => 'Unknown Character',
             'birth_year' => 'unknown',
             'gender' => 'n/a',
@@ -74,6 +77,7 @@ class CharacterDtoTest extends TestCase
     public function test_character_dto_handles_mass_with_commas(): void
     {
         $swapiData = [
+            'url' => 'https://swapi.dev/api/people/3/',
             'name' => 'Test Character',
             'birth_year' => '19BBY',
             'gender' => 'male',

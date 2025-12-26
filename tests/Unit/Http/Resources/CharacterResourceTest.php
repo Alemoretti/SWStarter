@@ -11,6 +11,7 @@ class CharacterResourceTest extends TestCase
     public function test_character_resource_transforms_dto_correctly(): void
     {
         $dto = new CharacterDto(
+            id: 1,
             name: 'Luke Skywalker',
             birthYear: '19BBY',
             gender: 'male',
@@ -36,6 +37,7 @@ class CharacterResourceTest extends TestCase
     public function test_character_resource_handles_null_values(): void
     {
         $dto = new CharacterDto(
+            id: 2,
             name: 'Unknown Character',
             birthYear: null,
             gender: 'n/a',

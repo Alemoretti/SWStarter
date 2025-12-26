@@ -19,6 +19,7 @@ class MovieResource extends JsonResource
         $dto = $this->resource;
 
         return [
+            'id' => $dto->id,
             'title' => $dto->title,
             'opening_crawl' => $dto->openingCrawl,
             'characters' => $dto->characters,
