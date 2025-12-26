@@ -9,6 +9,8 @@ use App\Http\Resources\MovieResource;
 use App\Models\SearchQuery;
 use App\Services\SwapiService;
 use Illuminate\Http\JsonResponse;
+use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 
 class SearchController extends Controller
 {
@@ -19,7 +21,7 @@ class SearchController extends Controller
     /**
      * Search for people or movies.
      */
-    public function search(SearchRequest $request): JsonResponse
+    public function search(SearchRequest $request): InertiaResponse|JsonResponse
     {
         $startTime = microtime(true);
 
@@ -28,14 +30,10 @@ class SearchController extends Controller
 
         if ($type === 'people') {
             $results = $this->swapiService->searchPeople($query);
-            $response = response()->json([
-                'data' => CharacterResource::collection($results),
-            ]);
+            $resources = CharacterResource::collection($results);
         } else {
             $results = $this->swapiService->searchFilms($query);
-            $response = response()->json([
-                'data' => MovieResource::collection($results),
-            ]);
+            $resources = MovieResource::collection($results);
         }
 
         $responseTime = (int) ((microtime(true) - $startTime) * 1000);
@@ -50,6 +48,18 @@ class SearchController extends Controller
 
         event(new SearchPerformed($query, $type, $resultsCount));
 
-        return $response;
+        // Return Inertia response for web requests, JSON for API
+        if ($request->wantsJson()) {
+            return response()->json([
+                'data' => $resources,
+            ]);
+        }
+
+        return Inertia::render('Search/Index', [
+            'query' => $query,
+            'type' => $type,
+            'results' => $resources->resolve(),
+            'resultsCount' => $resultsCount,
+        ]);
     }
 }
