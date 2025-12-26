@@ -17,7 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->job(new RecomputeStatisticsJob)->everyFiveMinutes();
     })
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->web(append: [
+            \App\Http\Middleware\HandleInertiaRequests::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
