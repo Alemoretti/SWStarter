@@ -49,25 +49,25 @@ class StatisticsServiceTest extends TestCase
             'type' => 'people',
             'results_count' => 1,
             'response_time_ms' => 100,
-            'created_at' => $baseDate->copy()
+            'created_at' => $baseDate->copy(),
         ]);
         $query1->refresh();
-        
+
         $query2 = SearchQuery::create([
             'query' => 'test2',
             'type' => 'people',
             'results_count' => 1,
             'response_time_ms' => 100,
-            'created_at' => $baseDate->copy()
+            'created_at' => $baseDate->copy(),
         ]);
         $query2->refresh();
-        
+
         $query3 = SearchQuery::create([
             'query' => 'test3',
             'type' => 'people',
             'results_count' => 1,
             'response_time_ms' => 100,
-            'created_at' => $baseDate->copy()->setHour(14)
+            'created_at' => $baseDate->copy()->setHour(14),
         ]);
         $query3->refresh();
 

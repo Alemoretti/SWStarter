@@ -35,7 +35,7 @@ class StatisticsService
         }
 
         $total = $queries->count();
-        
+
         $queryCounts = $queries->groupBy('query')
             ->map(function ($group) use ($total) {
                 return [
@@ -62,7 +62,7 @@ class StatisticsService
         }
 
         $avg = $queries->avg('response_time_ms');
-        
+
         return $avg ? round((float) $avg, 2) : null;
     }
 
@@ -82,4 +82,3 @@ class StatisticsService
         return $hourCounts->sortDesc()->keys()->first();
     }
 }
-
