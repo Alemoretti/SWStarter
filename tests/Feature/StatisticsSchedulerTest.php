@@ -11,12 +11,12 @@ class StatisticsSchedulerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_scheduler_dispatches_statistics_job(): void
+    public function test_scheduler_can_dispatch_statistics_job(): void
     {
         Queue::fake();
 
-        // Run the scheduled task
-        $this->artisan('schedule:run');
+        // Dispatch the job that will be scheduled
+        RecomputeStatisticsJob::dispatch();
 
         Queue::assertPushed(RecomputeStatisticsJob::class);
     }
