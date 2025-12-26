@@ -30,7 +30,7 @@ class SearchControllerTest extends TestCase
             ], 200)
         ]);
 
-        $response = $this->postJson('/api/search', [
+        $response = $this->postJson('/api/v1/search', [
             'query' => 'luke',
             'type' => 'people',
         ]);
@@ -55,7 +55,7 @@ class SearchControllerTest extends TestCase
             ], 200)
         ]);
 
-        $response = $this->postJson('/api/search', [
+        $response = $this->postJson('/api/v1/search', [
             'query' => 'hope',
             'type' => 'movies',
         ]);
@@ -70,7 +70,7 @@ class SearchControllerTest extends TestCase
 
     public function test_search_validates_query_is_required(): void
     {
-        $response = $this->postJson('/api/search', [
+        $response = $this->postJson('/api/v1/search', [
             'type' => 'people',
         ]);
 
@@ -80,7 +80,7 @@ class SearchControllerTest extends TestCase
 
     public function test_search_validates_type_is_required(): void
     {
-        $response = $this->postJson('/api/search', [
+        $response = $this->postJson('/api/v1/search', [
             'query' => 'luke',
         ]);
 
@@ -90,7 +90,7 @@ class SearchControllerTest extends TestCase
 
     public function test_search_validates_type_must_be_people_or_movies(): void
     {
-        $response = $this->postJson('/api/search', [
+        $response = $this->postJson('/api/v1/search', [
             'query' => 'luke',
             'type' => 'invalid',
         ]);
@@ -107,7 +107,7 @@ class SearchControllerTest extends TestCase
             ], 200)
         ]);
 
-        $response = $this->postJson('/api/search', [
+        $response = $this->postJson('/api/v1/search', [
             'query' => 'nonexistent',
             'type' => 'people',
         ]);
