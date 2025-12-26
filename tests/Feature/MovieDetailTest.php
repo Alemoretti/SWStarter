@@ -20,7 +20,7 @@ class MovieDetailTest extends TestCase
             ], 200),
         ]);
 
-        $response = $this->getJson('/api/v1/movies/1');
+        $response = $this->getJson('/api/v1/films/1');
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -28,13 +28,13 @@ class MovieDetailTest extends TestCase
                     'title',
                     'opening_crawl',
                     'characters',
-                ]
+                ],
             ])
             ->assertJson([
                 'data' => [
                     'title' => 'A New Hope',
                     'opening_crawl' => 'It is a period of civil war...',
-                ]
+                ],
             ]);
     }
 
@@ -42,11 +42,11 @@ class MovieDetailTest extends TestCase
     {
         Http::fake([
             '*/api/films/999' => Http::response([
-                'detail' => 'Not found'
-            ], 404)
+                'detail' => 'Not found',
+            ], 404),
         ]);
 
-        $response = $this->getJson('/api/v1/movies/999');
+        $response = $this->getJson('/api/v1/films/999');
 
         $response->assertStatus(404);
     }
@@ -55,11 +55,11 @@ class MovieDetailTest extends TestCase
     {
         Http::fake([
             '*/api/films/1' => Http::response([
-                'error' => 'Internal Server Error'
+                'error' => 'Internal Server Error',
             ], 500),
         ]);
 
-        $response = $this->getJson('/api/v1/movies/1');
+        $response = $this->getJson('/api/v1/films/1');
 
         $response->assertStatus(500);
     }

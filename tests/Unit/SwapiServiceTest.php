@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use App\DTOs\CharacterDto;
-use App\DTOs\MovieDto;
+use App\DTOs\FilmDto;
 use App\Services\SwapiService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -96,7 +96,7 @@ class SwapiServiceTest extends TestCase
 
         $this->assertIsArray($results);
         $this->assertCount(1, $results);
-        $this->assertInstanceOf(MovieDto::class, $results[0]);
+        $this->assertInstanceOf(FilmDto::class, $results[0]);
         $this->assertEquals('A New Hope', $results[0]->title);
     }
 
@@ -149,7 +149,7 @@ class SwapiServiceTest extends TestCase
         $service = new SwapiService;
         $movie = $service->getMovie('https://swapi.dev/api/films/1/');
 
-        $this->assertInstanceOf(MovieDto::class, $movie);
+        $this->assertInstanceOf(FilmDto::class, $movie);
         $this->assertEquals('A New Hope', $movie->title);
     }
 }

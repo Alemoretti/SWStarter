@@ -2,7 +2,7 @@
 
 namespace App\DTOs;
 
-class MovieDto
+class FilmDto
 {
     public function __construct(
         public readonly string $title,
