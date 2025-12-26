@@ -13,7 +13,7 @@ class SwapiService
 
     private function getBaseUrl(): string
     {
-        return env('SWAPI_BASE_URL', 'https://swapi.dev/api');
+        return config('services.swapi.base_url', 'https://swapi.dev/api');
     }
 
     /**
@@ -37,17 +37,36 @@ class SwapiService
      */
     private function fetchPeople(string $query): array
     {
-        $response = Http::get($this->getBaseUrl().'/people', ['search' => $query]);
+        $url = $this->getBaseUrl().'/people';
+        $response = Http::get($url, ['search' => $query]);
 
         if (! $response->successful()) {
+            \Log::warning('SWAPI search failed', [
+                'url' => $url,
+                'query' => $query,
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+
             return [];
         }
 
         $data = $response->json();
 
+        // Handle both response formats:
+        // swapi.dev returns: {"results": [...]}
+        // swapi.info returns: [...]
+        $results = is_array($data) && isset($data[0]) && ! isset($data['results'])
+            ? $data  // Direct array format (swapi.info)
+            : ($data['results'] ?? []);  // Wrapped format (swapi.dev)
+
+        if (! is_array($results) || empty($results)) {
+            return [];
+        }
+
         return array_map(
             fn ($item) => CharacterDto::fromSwapi($item),
-            $data['results'] ?? []
+            $results
         );
     }
 
@@ -72,17 +91,36 @@ class SwapiService
      */
     private function fetchFilms(string $query): array
     {
-        $response = Http::get($this->getBaseUrl().'/films', ['search' => $query]);
+        $url = $this->getBaseUrl().'/films';
+        $response = Http::get($url, ['search' => $query]);
 
         if (! $response->successful()) {
+            \Log::warning('SWAPI search failed', [
+                'url' => $url,
+                'query' => $query,
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+
             return [];
         }
 
         $data = $response->json();
 
+        // Handle both response formats:
+        // swapi.dev returns: {"results": [...]}
+        // swapi.info returns: [...]
+        $results = is_array($data) && isset($data[0]) && ! isset($data['results'])
+            ? $data  // Direct array format (swapi.info)
+            : ($data['results'] ?? []);  // Wrapped format (swapi.dev)
+
+        if (! is_array($results) || empty($results)) {
+            return [];
+        }
+
         return array_map(
             fn ($item) => MovieDto::fromSwapi($item),
-            $data['results'] ?? []
+            $results
         );
     }
 
