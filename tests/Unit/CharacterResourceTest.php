@@ -18,7 +18,7 @@ class CharacterResourceTest extends TestCase
             hairColor: 'blond',
             height: 172,
             mass: 77,
-            movies: ['https://swapi.dev/api/films/1/']
+            films: ['https://swapi.dev/api/films/1/']
         );
 
         $resource = new CharacterResource($dto);
@@ -43,7 +43,7 @@ class CharacterResourceTest extends TestCase
             hairColor: 'none',
             height: null,
             mass: null,
-            movies: []
+            films: []
         );
 
         $resource = new CharacterResource($dto);

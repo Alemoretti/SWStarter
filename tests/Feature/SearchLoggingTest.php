@@ -14,7 +14,7 @@ class SearchLoggingTest extends TestCase
     public function test_search_logs_query_to_database(): void
     {
         Http::fake([
-            'https://swapi.dev/api/people*' => Http::response([
+            '*/api/people*' => Http::response([
                 'results' => [[
                     'name' => 'Luke Skywalker',
                     'birth_year' => '19BBY',
@@ -43,7 +43,7 @@ class SearchLoggingTest extends TestCase
     public function test_search_logs_response_time(): void
     {
         Http::fake([
-            'https://swapi.dev/api/people*' => Http::response([
+            '*/api/people*' => Http::response([
                 'results' => [],
             ], 200),
         ]);
@@ -61,7 +61,7 @@ class SearchLoggingTest extends TestCase
     public function test_search_logs_results_count(): void
     {
         Http::fake([
-            'https://swapi.dev/api/people*' => Http::response([
+            '*/api/people*' => Http::response([
                 'results' => [
                     ['name' => 'Luke', 'birth_year' => '19BBY', 'gender' => 'male', 'eye_color' => 'blue', 'hair_color' => 'blond', 'height' => '172', 'mass' => '77', 'films' => []],
                     ['name' => 'Yoda', 'birth_year' => '896BBY', 'gender' => 'male', 'eye_color' => 'brown', 'hair_color' => 'white', 'height' => '66', 'mass' => '17', 'films' => []],
@@ -80,22 +80,22 @@ class SearchLoggingTest extends TestCase
         ]);
     }
 
-    public function test_search_logs_movies_type(): void
+    public function test_search_logs_films_type(): void
     {
         Http::fake([
-            'https://swapi.dev/api/films*' => Http::response([
+            '*/api/films*' => Http::response([
                 'results' => [],
             ], 200),
         ]);
 
         $this->postJson('/api/v1/search', [
             'query' => 'hope',
-            'type' => 'movies',
+            'type' => 'films',
         ]);
 
         $this->assertDatabaseHas('search_queries', [
             'query' => 'hope',
-            'type' => 'movies',
+            'type' => 'films',
         ]);
     }
 }

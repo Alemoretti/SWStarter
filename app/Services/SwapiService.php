@@ -9,9 +9,12 @@ use Illuminate\Support\Facades\Http;
 
 class SwapiService
 {
-    private const BASE_URL = 'https://swapi.dev/api';
-
     private const CACHE_TTL = 3600; // 1 hour
+
+    private function getBaseUrl(): string
+    {
+        return env('SWAPI_BASE_URL', 'https://swapi.dev/api');
+    }
 
     /**
      * Search for people in SWAPI.
@@ -34,7 +37,7 @@ class SwapiService
      */
     private function fetchPeople(string $query): array
     {
-        $response = Http::get(self::BASE_URL.'/people', ['search' => $query]);
+        $response = Http::get($this->getBaseUrl().'/people', ['search' => $query]);
 
         if (! $response->successful()) {
             return [];
@@ -49,27 +52,27 @@ class SwapiService
     }
 
     /**
-     * Search for movies in SWAPI.
+     * Search for films in SWAPI.
      *
      * @return array<int, MovieDto>
      */
-    public function searchMovies(string $query): array
+    public function searchFilms(string $query): array
     {
         return Cache::remember(
-            "swapi.movies.search.{$query}",
+            "swapi.films.search.{$query}",
             self::CACHE_TTL,
-            fn () => $this->fetchMovies($query)
+            fn () => $this->fetchFilms($query)
         );
     }
 
     /**
-     * Fetch movies from SWAPI.
+     * Fetch films from SWAPI.
      *
      * @return array<int, MovieDto>
      */
-    private function fetchMovies(string $query): array
+    private function fetchFilms(string $query): array
     {
-        $response = Http::get(self::BASE_URL.'/films', ['search' => $query]);
+        $response = Http::get($this->getBaseUrl().'/films', ['search' => $query]);
 
         if (! $response->successful()) {
             return [];
@@ -84,17 +87,22 @@ class SwapiService
     }
 
     /**
-     * Get a character by URL from SWAPI.
+     * Get a single character by ID.
      */
-    public function getCharacter(string $url): ?CharacterDto
+    public function getCharacter(int $id): CharacterDto
     {
-        $response = Http::get($url);
+        $baseUrl = $this->getBaseUrl();
+        $response = Cache::remember("swapi_people_{$id}", 3600, function () use ($id, $baseUrl) {
+            $response = Http::get("{$baseUrl}/people/{$id}");
 
-        if (! $response->successful()) {
-            return null;
-        }
+            if ($response->failed()) {
+                throw new \Exception("Failed to fetch character: {$response->status()}");
+            }
 
-        return CharacterDto::fromSwapi($response->json());
+            return $response->json();
+        });
+
+        return CharacterDto::fromSwapi($response);
     }
 
     /**

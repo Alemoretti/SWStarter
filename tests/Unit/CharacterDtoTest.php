@@ -17,7 +17,7 @@ class CharacterDtoTest extends TestCase
             hairColor: 'blond',
             height: 172,
             mass: 77,
-            movies: ['https://swapi.dev/api/films/1/']
+            films: ['https://swapi.dev/api/films/1/']
         );
 
         $this->assertEquals('Luke Skywalker', $dto->name);
@@ -27,7 +27,7 @@ class CharacterDtoTest extends TestCase
         $this->assertEquals('blond', $dto->hairColor);
         $this->assertEquals(172, $dto->height);
         $this->assertEquals(77, $dto->mass);
-        $this->assertIsArray($dto->movies);
+        $this->assertIsArray($dto->films);
     }
 
     public function test_character_dto_can_be_created_from_swapi_data(): void
