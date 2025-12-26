@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Http\Resources;
 
 use App\DTOs\CharacterDto;
 use App\Http\Resources\CharacterResource;

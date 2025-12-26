@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\DTOs;
 
 use App\DTOs\CharacterDto;
 use Tests\TestCase;
