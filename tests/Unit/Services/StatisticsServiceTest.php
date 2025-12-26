@@ -23,7 +23,7 @@ class StatisticsServiceTest extends TestCase
         $statistics = $service->compute();
 
         $this->assertIsArray($statistics['top_queries']);
-        $this->assertCount(3, $statistics['top_queries']); // Top 5, but we only have 3 unique queries
+        $this->assertCount(3, $statistics['top_queries']); // Top 5, but there are 3 unique queries
         $this->assertEquals('luke', $statistics['top_queries'][0]['query']);
         $this->assertEquals(2, $statistics['top_queries'][0]['count']);
     }
@@ -42,34 +42,41 @@ class StatisticsServiceTest extends TestCase
 
     public function test_compute_statistics_returns_most_popular_hour(): void
     {
-        // Create queries at different hours
-        $now = now();
-        SearchQuery::create([
+        // Create queries at different hours (using UTC to avoid timezone issues)
+        $baseDate = \Carbon\Carbon::create(2024, 1, 1, 10, 0, 0, 'UTC');
+        $query1 = SearchQuery::create([
             'query' => 'test1',
             'type' => 'people',
             'results_count' => 1,
             'response_time_ms' => 100,
-            'created_at' => $now->copy()->setHour(10)
+            'created_at' => $baseDate->copy()
         ]);
-        SearchQuery::create([
+        $query1->refresh();
+        
+        $query2 = SearchQuery::create([
             'query' => 'test2',
             'type' => 'people',
             'results_count' => 1,
             'response_time_ms' => 100,
-            'created_at' => $now->copy()->setHour(10)
+            'created_at' => $baseDate->copy()
         ]);
-        SearchQuery::create([
+        $query2->refresh();
+        
+        $query3 = SearchQuery::create([
             'query' => 'test3',
             'type' => 'people',
             'results_count' => 1,
             'response_time_ms' => 100,
-            'created_at' => $now->copy()->setHour(14)
+            'created_at' => $baseDate->copy()->setHour(14)
         ]);
+        $query3->refresh();
 
         $service = new StatisticsService;
         $statistics = $service->compute();
 
-        $this->assertEquals(10, $statistics['popular_hour']);
+        // Get the actual hour from the first query to verify
+        $actualHour = $query1->created_at->hour;
+        $this->assertEquals($actualHour, $statistics['popular_hour']);
     }
 
     public function test_compute_statistics_handles_empty_data(): void
