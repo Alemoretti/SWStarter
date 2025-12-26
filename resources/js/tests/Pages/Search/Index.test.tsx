@@ -111,17 +111,32 @@ describe('SearchIndex', () => {
         });
     });
 
-    it('disables form inputs when loading', () => {
+    it('shows loading state when form is submitted', async () => {
+        const { router } = await import('@inertiajs/react');
+        const mockPost = vi.mocked(router.post);
+
         render(<SearchIndex />);
 
-        const input = screen.getByRole('textbox');
+        const input = screen.getByRole('textbox') as HTMLInputElement;
         const submitButton = screen.getByRole('button', { name: /search/i });
 
-        // Simulate loading state by setting isLoading
-        // Note: In a real scenario, this would be triggered by form submission
-        // For this simple test, we're just checking the disabled attribute exists
-        expect(input).not.toBeDisabled();
-        expect(submitButton).not.toBeDisabled();
+        // Type a valid query
+        fireEvent.change(input, { target: { value: 'luke' } });
+
+        // Submit the form
+        fireEvent.click(submitButton);
+
+        // The button text should change to "SEARCHING..."
+        await waitFor(() => {
+            expect(screen.getByText('SEARCHING...')).toBeInTheDocument();
+        });
+
+        // Verify router.post was called
+        expect(mockPost).toHaveBeenCalledWith(
+            '/api/v1/search',
+            { query: 'luke', type: 'people' },
+            expect.any(Object)
+        );
     });
 });
 
