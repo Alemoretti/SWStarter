@@ -24,14 +24,16 @@ class SearchController extends Controller
 
         if ($type === 'people') {
             $results = $this->swapiService->searchPeople($query);
+
             return response()->json([
-                'data' => CharacterResource::collection($results)
+                'data' => CharacterResource::collection($results),
             ]);
         }
 
         $results = $this->swapiService->searchMovies($query);
+
         return response()->json([
-            'data' => MovieResource::collection($results)
+            'data' => MovieResource::collection($results),
         ]);
     }
 }

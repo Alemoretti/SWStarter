@@ -2,9 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\DTOs\CharacterDto;
-use App\DTOs\MovieDto;
-use App\Services\SwapiService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
@@ -26,8 +23,8 @@ class SearchControllerTest extends TestCase
                     'height' => '172',
                     'mass' => '77',
                     'films' => [],
-                ]]
-            ], 200)
+                ]],
+            ], 200),
         ]);
 
         $response = $this->postJson('/api/v1/search', [
@@ -38,8 +35,8 @@ class SearchControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'data' => [
-                    '*' => ['name', 'birth_year', 'gender', 'eye_color', 'hair_color', 'height', 'mass']
-                ]
+                    '*' => ['name', 'birth_year', 'gender', 'eye_color', 'hair_color', 'height', 'mass'],
+                ],
             ]);
     }
 
@@ -51,8 +48,8 @@ class SearchControllerTest extends TestCase
                     'title' => 'A New Hope',
                     'opening_crawl' => 'It is a period of civil war...',
                     'characters' => [],
-                ]]
-            ], 200)
+                ]],
+            ], 200),
         ]);
 
         $response = $this->postJson('/api/v1/search', [
@@ -63,8 +60,8 @@ class SearchControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'data' => [
-                    '*' => ['title', 'opening_crawl']
-                ]
+                    '*' => ['title', 'opening_crawl'],
+                ],
             ]);
     }
 
@@ -103,8 +100,8 @@ class SearchControllerTest extends TestCase
     {
         Http::fake([
             'https://swapi.dev/api/people*' => Http::response([
-                'results' => []
-            ], 200)
+                'results' => [],
+            ], 200),
         ]);
 
         $response = $this->postJson('/api/v1/search', [
