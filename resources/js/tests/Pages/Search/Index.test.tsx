@@ -10,6 +10,7 @@ import SearchIndex from '@/Pages/Search/Index';
 vi.mock('@inertiajs/react', () => ({
     router: {
         post: vi.fn(),
+        get: vi.fn(),
     },
     Link: ({ href, children, ...props }: { href: string; children: React.ReactNode }) => (
         <a href={href} {...props}>
@@ -28,7 +29,8 @@ describe('SearchIndex', () => {
 
         expect(screen.getByText('SWStarter')).toBeInTheDocument();
         expect(screen.getByText('What are you searching for?')).toBeInTheDocument();
-        expect(screen.getByText('Results')).toBeInTheDocument();
+        // Activity renders both panels, so we check for at least one "Results" heading
+        expect(screen.getAllByText('Results').length).toBeGreaterThan(0);
         expect(screen.getByRole('textbox')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: /search/i })).toBeInTheDocument();
     });
@@ -65,7 +67,8 @@ describe('SearchIndex', () => {
     it('displays "No search performed yet" when no results', () => {
         render(<SearchIndex />);
 
-        expect(screen.getByText('No search performed yet.')).toBeInTheDocument();
+        // Activity renders both panels, so we check for at least one instance
+        expect(screen.getAllByText('No search performed yet.').length).toBeGreaterThan(0);
     });
 
     it('displays search results when provided', () => {
@@ -78,7 +81,7 @@ describe('SearchIndex', () => {
 
         expect(screen.getByText('Luke Skywalker')).toBeInTheDocument();
         expect(screen.getByText('Darth Vader')).toBeInTheDocument();
-        expect(screen.getAllByText('SEE DETAILS →')).toHaveLength(2);
+        expect(screen.getAllByText('SEE DETAILS')).toHaveLength(2);
     });
 
     it('displays "There are zero matches" when search returns no results', () => {
@@ -113,7 +116,7 @@ describe('SearchIndex', () => {
 
     it('shows loading state when form is submitted', async () => {
         const { router } = await import('@inertiajs/react');
-        const mockPost = vi.mocked(router.post);
+        const mockGet = vi.mocked(router.get);
 
         render(<SearchIndex />);
 
@@ -131,8 +134,8 @@ describe('SearchIndex', () => {
             expect(screen.getByText('SEARCHING...')).toBeInTheDocument();
         });
 
-        // Verify router.post was called
-        expect(mockPost).toHaveBeenCalledWith(
+        // Verify router.get was called
+        expect(mockGet).toHaveBeenCalledWith(
             '/api/v1/search',
             { query: 'luke', type: 'people' },
             expect.any(Object)

@@ -1,49 +1,27 @@
-import { useMemo, memo } from 'react';
+import { memo } from 'react';
 import { Link } from '@inertiajs/react';
 import ErrorDisplay from '@/Components/ErrorDisplay';
-
-interface Movie {
-    id: number;
-    title: string;
-}
 
 interface Character {
     id: number;
     name: string;
-    birth_year: string | null;
-    gender: string;
-    eye_color: string;
-    hair_color: string;
-    height: number | null;
-    mass: number | null;
-    films: string[];
-    movies?: Movie[];
+}
+
+interface Movie {
+    id: number;
+    title: string;
+    opening_crawl: string;
+    characters?: Character[];
 }
 
 interface Props {
-    character?: Character;
+    movie?: Movie;
     error?: string;
 }
 
-function CharacterDetail({ character, error }: Props) {
-    // Memoize character details to avoid recalculation
-    const characterDetails = useMemo(
-        () => {
-            if (!character) return [];
-            return [
-                { label: 'Birth Year', value: character.birth_year || 'Unknown' },
-                { label: 'Gender', value: character.gender },
-                { label: 'Eye Color', value: character.eye_color },
-                { label: 'Hair Color', value: character.hair_color },
-                ...(character.height !== null ? [{ label: 'Height', value: character.height }] : []),
-                ...(character.mass !== null ? [{ label: 'Mass', value: character.mass }] : []),
-            ];
-        },
-        [character]
-    );
-
-    if (error || !character) {
-        return <ErrorDisplay error={error || 'Character not found'} />;
+function MovieDetail({ movie, error }: Props) {
+    if (error || !movie) {
+        return <ErrorDisplay error={error || 'Movie not found'} />;
     }
 
     return (
@@ -55,7 +33,7 @@ function CharacterDetail({ character, error }: Props) {
 
                 <div className="bg-white rounded-lg shadow p-6 max-w-4xl mx-auto">
                     <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-                        {character.name}
+                        {movie.title}
                     </h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -65,39 +43,39 @@ function CharacterDetail({ character, error }: Props) {
                                 Details
                             </h3>
                             <div className="space-y-3">
-                                {characterDetails.map((detail) => (
-                                    <div key={detail.label}>
-                                        <span className="font-medium text-gray-700">{detail.label}:</span>{' '}
-                                        <span className="text-gray-900">{detail.value}</span>
-                                    </div>
-                                ))}
+                                <div>
+                                    <span className="font-medium text-gray-700">Opening Crawl:</span>
+                                    <p className="text-gray-900 mt-2 whitespace-pre-line">
+                                        {movie.opening_crawl}
+                                    </p>
+                                </div>
                             </div>
                         </div>
 
-                        {/* Right Column - Movies */}
+                        {/* Right Column - Characters */}
                         <div>
                             <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                                Movies
+                                Characters
                             </h3>
-                            {character.movies && character.movies.length > 0 ? (
+                            {movie.characters && movie.characters.length > 0 ? (
                                 <div className="space-y-2">
-                                    {character.movies.map((movie) => (
-                                        <div key={movie.id}>
+                                    {movie.characters.map((character) => (
+                                        <div key={character.id}>
                                             <Link
-                                                href={`/movies/${movie.id}`}
+                                                href={`/characters/${character.id}`}
                                                 className="text-blue-600 hover:text-blue-800 underline"
                                             >
-                                                {movie.title}
+                                                {character.name}
                                             </Link>
                                         </div>
                                     ))}
                                 </div>
                             ) : (
-                                <p className="text-gray-500">No movies found</p>
+                                <p className="text-gray-500">No characters found</p>
                             )}
                         </div>
                     </div>
-
+                              
                     <div className="mt-8 text-center">
                         <Link
                             href="/"
@@ -113,4 +91,4 @@ function CharacterDetail({ character, error }: Props) {
 }
 
 // Memoize component to prevent unnecessary re-renders
-export default memo(CharacterDetail);
+export default memo(MovieDetail);

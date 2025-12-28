@@ -12,12 +12,10 @@ Route::get('/', function () {
     return Inertia::render('Search/Index');
 });
 Route::get('/characters/{id}', [CharacterController::class, 'show']);
+Route::get('/movies/{id}', [MovieController::class, 'show']);
 Route::get('/api/v1/characters/{id}', [CharacterController::class, 'show']);
 Route::get('/api/v1/movies/{id}', [MovieController::class, 'show']);
 Route::get('/api/v1/statistics', [StatisticsController::class, 'index']);
-Route::get('/test', function () {
-    return Inertia::render('Test');
-});
 
-// Post routes
-Route::post('/api/v1/search', [SearchController::class, 'search']);
+// Search route - accepts both GET and POST for form submissions and page refreshes
+Route::match(['get', 'post'], '/api/v1/search', [SearchController::class, 'search']);
