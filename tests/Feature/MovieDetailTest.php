@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
@@ -53,6 +54,8 @@ class MovieDetailTest extends TestCase
 
     public function test_movie_detail_handles_api_errors(): void
     {
+        Cache::flush();
+
         Http::fake([
             '*/api/films/1' => Http::response([
                 'error' => 'Internal Server Error',

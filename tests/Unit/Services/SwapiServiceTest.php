@@ -5,6 +5,7 @@ namespace Tests\Unit\Services;
 use App\DTOs\CharacterDto;
 use App\DTOs\MovieDto;
 use App\Services\SwapiService;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
@@ -38,6 +39,8 @@ class SwapiServiceTest extends TestCase
 
     public function test_search_people_returns_empty_array_on_api_error(): void
     {
+        Cache::flush();
+
         Http::fake([
             '*/api/people*' => Http::response([], 500),
         ]);
@@ -51,6 +54,8 @@ class SwapiServiceTest extends TestCase
 
     public function test_search_people_caches_results(): void
     {
+        Cache::flush();
+
         Http::fake([
             '*/api/people*' => Http::response([
                 'results' => [[
@@ -62,6 +67,7 @@ class SwapiServiceTest extends TestCase
                     'height' => '172',
                     'mass' => '77',
                     'films' => [],
+                    'url' => 'https://swapi.dev/api/people/1/',
                 ]],
             ], 200),
         ]);
@@ -123,6 +129,8 @@ class SwapiServiceTest extends TestCase
 
     public function test_get_character_throws_exception_on_error(): void
     {
+        Cache::flush();
+
         Http::fake([
             '*/api/people/1' => Http::response([], 404),
         ]);

@@ -150,13 +150,13 @@ class SwapiService
     {
         $baseUrl = $this->getBaseUrl();
         $response = Cache::remember("swapi_films_{$id}", 3600, function () use ($id, $baseUrl) {
-            $response = Http::get("{$baseUrl}/films/{$id}");
+            $httpResponse = Http::get("{$baseUrl}/films/{$id}");
 
-            if ($response->failed()) {
-                throw new \Exception("Failed to fetch movie: {$response->status()}");
+            if ($httpResponse->failed()) {
+                throw new \Exception("Failed to fetch movie: {$httpResponse->status()}");
             }
 
-            return $response->json();
+            return $httpResponse->json();
         });
 
         return MovieDto::fromSwapi($response);
