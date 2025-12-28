@@ -16,8 +16,6 @@ class SwapiService
 
     /**
      * Create a new instance with default client.
-     *
-     * @return self
      */
     public static function make(): self
     {
@@ -30,7 +28,6 @@ class SwapiService
     /**
      * Search for people in SWAPI.
      *
-     * @param  string  $query
      * @return array<int, CharacterDto>
      */
     public function searchPeople(string $query): array
@@ -45,7 +42,6 @@ class SwapiService
     /**
      * Fetch people from SWAPI.
      *
-     * @param  string  $query
      * @return array<int, CharacterDto>
      */
     private function fetchPeople(string $query): array
@@ -68,7 +64,6 @@ class SwapiService
     /**
      * Search for films in SWAPI.
      *
-     * @param  string  $query
      * @return array<int, MovieDto>
      */
     public function searchFilms(string $query): array
@@ -83,7 +78,6 @@ class SwapiService
     /**
      * Fetch films from SWAPI.
      *
-     * @param  string  $query
      * @return array<int, MovieDto>
      */
     private function fetchFilms(string $query): array
@@ -106,8 +100,6 @@ class SwapiService
     /**
      * Get a single character by ID.
      *
-     * @param  int  $id
-     * @return CharacterDto
      * @throws \Exception
      */
     public function getCharacter(int $id): CharacterDto
@@ -128,8 +120,6 @@ class SwapiService
     /**
      * Get a single movie by ID.
      *
-     * @param  int  $id
-     * @return MovieDto
      * @throws \Exception
      */
     public function getMovieById(int $id): MovieDto
@@ -149,9 +139,6 @@ class SwapiService
 
     /**
      * Get a movie by URL from SWAPI.
-     *
-     * @param  string  $url
-     * @return MovieDto|null
      */
     public function getMovie(string $url): ?MovieDto
     {

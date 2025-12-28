@@ -9,8 +9,6 @@ class SwapiClient
 {
     /**
      * Create a new SWAPI client instance.
-     *
-     * @param  string  $baseUrl
      */
     public function __construct(
         private readonly string $baseUrl
@@ -19,7 +17,6 @@ class SwapiClient
     /**
      * Make a GET request to SWAPI.
      *
-     * @param  string  $endpoint
      * @param  array<string, mixed>  $queryParams
      * @return array<string, mixed>|null
      */
@@ -69,8 +66,6 @@ class SwapiClient
      * This is necessary because swapi.info doesn't filter on the server side.
      *
      * @param  array<int, array<string, mixed>>  $results
-     * @param  string  $query
-     * @param  string  $field
      * @return array<int, array<string, mixed>>
      */
     public function filterResults(array $results, string $query, string $field): array
@@ -83,8 +78,8 @@ class SwapiClient
 
         return array_filter($results, function ($item) use ($queryLower, $field) {
             $value = strtolower($item[$field] ?? '');
+
             return str_contains($value, $queryLower);
         });
     }
 }
-

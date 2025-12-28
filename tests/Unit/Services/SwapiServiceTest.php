@@ -4,7 +4,6 @@ namespace Tests\Unit\Services;
 
 use App\DTOs\CharacterDto;
 use App\DTOs\MovieDto;
-use App\Services\SwapiClient;
 use App\Services\SwapiService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
