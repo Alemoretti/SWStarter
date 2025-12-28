@@ -17,7 +17,7 @@ interface Props {
 export default function SearchResults({ query, type, results, resultsCount }: Props) {
     return (
         <div className="min-h-screen bg-gray-100">
-            <div className="container mx-auto px-4 py-8">
+            <div className="container mx-auto px-4">
                 <h1 className="text-3xl font-bold text-gray-900 mb-4">
                     Search Results
                 </h1>
