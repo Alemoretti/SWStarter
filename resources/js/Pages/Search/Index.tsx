@@ -12,17 +12,32 @@ interface Result {
     [key: string]: unknown;
 }
 
+interface PaginationData {
+    current_page: number;
+    per_page: number;
+    total: number;
+    total_pages: number;
+}
+
 interface Props {
     query?: string;
     type?: 'people' | 'movies';
     results?: Result[];
     resultsCount?: number;
+    pagination?: PaginationData;
 }
 
-export default function SearchIndex({ query: initialQuery = '', type: initialType = 'people', results, resultsCount }: Props) {
-    const { query, type, errors, isLoading, setQuery, setType, handleSubmit } = useSearchForm({
+export default function SearchIndex({ 
+    query: initialQuery = '', 
+    type: initialType = 'people', 
+    results, 
+    resultsCount,
+    pagination: initialPagination 
+}: Props) {
+    const { query, type, page, errors, isLoading, setQuery, setType, handleSubmit, handlePageChange } = useSearchForm({
         initialQuery,
         initialType,
+        initialPage: initialPagination?.current_page ?? 1,
     });
 
     // Preserve results for both search types using local state
@@ -32,11 +47,17 @@ export default function SearchIndex({ query: initialQuery = '', type: initialTyp
     const [peopleResultsCount, setPeopleResultsCount] = useState<number | undefined>(
         initialType === 'people' ? resultsCount : undefined
     );
+    const [peoplePagination, setPeoplePagination] = useState<PaginationData | undefined>(
+        initialType === 'people' ? initialPagination : undefined
+    );
     const [moviesResults, setMoviesResults] = useState<Result[] | undefined>(
         initialType === 'movies' ? results : undefined
     );
     const [moviesResultsCount, setMoviesResultsCount] = useState<number | undefined>(
         initialType === 'movies' ? resultsCount : undefined
+    );
+    const [moviesPagination, setMoviesPagination] = useState<PaginationData | undefined>(
+        initialType === 'movies' ? initialPagination : undefined
     );
 
     // Update the appropriate results state when new results arrive from server
@@ -50,14 +71,16 @@ export default function SearchIndex({ query: initialQuery = '', type: initialTyp
             if (type === 'people') {
                 setPeopleResults(results);
                 setPeopleResultsCount(resultsCount);
+                setPeoplePagination(initialPagination);
             } else {
                 setMoviesResults(results);
                 setMoviesResultsCount(resultsCount);
+                setMoviesPagination(initialPagination);
             }
         }, 0);
 
         return () => clearTimeout(timeoutId);
-    }, [results, resultsCount, type]);
+    }, [results, resultsCount, type, initialPagination]);
 
     // Memoize placeholder text to avoid recalculation
     const placeholderText = useMemo(
@@ -92,6 +115,8 @@ export default function SearchIndex({ query: initialQuery = '', type: initialTyp
                                 results={peopleResults}
                                 resultsCount={peopleResultsCount}
                                 isLoading={isLoading && type === 'people'}
+                                pagination={peoplePagination}
+                                onPageChange={handlePageChange}
                             />
                         </Activity>
                         <Activity mode={type === 'movies' ? 'visible' : 'hidden'}>
@@ -100,6 +125,8 @@ export default function SearchIndex({ query: initialQuery = '', type: initialTyp
                                 results={moviesResults}
                                 resultsCount={moviesResultsCount}
                                 isLoading={isLoading && type === 'movies'}
+                                pagination={moviesPagination}
+                                onPageChange={handlePageChange}
                             />
                         </Activity>
                     </div>
