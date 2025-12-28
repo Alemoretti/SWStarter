@@ -20,8 +20,8 @@ function SearchResultItem({ id, name, title, type, showSeparator = false }: Sear
     return (
         <>
             <div className="py-[10px]">
-                <div className="flex items-center justify-between w-full">
-                    <h3 className="font-montserrat text-sm font-bold text-black flex-shrink-0">
+                <div className="flex items-center justify-between w-full gap-4">
+                    <h3 className="font-montserrat text-base font-bold text-black shrink-0">
                         {displayName}
                     </h3>
                     <Link
@@ -42,7 +42,7 @@ function SearchResultItem({ id, name, title, type, showSeparator = false }: Sear
                 </div>
             </div>
             {showSeparator && (
-                <div className="w-full h-px mt-2 mb-0" style={{ backgroundColor: 'var(--color-pinkish-grey)' }} />
+                <div className="w-full h-px mb-0" style={{ backgroundColor: 'var(--color-pinkish-grey)' }} />
             )}
         </>
     );

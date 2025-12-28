@@ -1,6 +1,7 @@
 import { useMemo, memo } from 'react';
 import { Link } from '@inertiajs/react';
 import ErrorDisplay from '@/Components/ErrorDisplay';
+import Header from '@/Components/Header';
 
 interface Movie {
     id: number;
@@ -48,27 +49,25 @@ function CharacterDetail({ character, error }: Props) {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <div className="container mx-auto px-4 py-8">
-                <h1 className="text-3xl font-bold text-green-600 mb-8 text-center">
-                    SWStarter
-                </h1>
-
-                <div className="bg-white rounded-lg shadow p-6 max-w-4xl mx-auto">
-                    <h2 className="text-2xl font-semibold text-gray-900 mb-6">
+            <Header />
+            <div className="container mx-auto px-4 py-8" style={{ maxWidth: '1200px' }}>
+                <div className="bg-white rounded-lg shadow p-8 max-w-4xl mx-auto">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-6">
                         {character.name}
                     </h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {/* Left Column - Details */}
                         <div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                            <h3 className="text-xl font-semibold text-gray-900 mb-[10px] block">
                                 Details
                             </h3>
-                            <div className="space-y-3">
+                            <div className="w-full h-px mt-2 mb-4" style={{ backgroundColor: 'var(--color-pinkish-grey)' }} />
+                            <div>
                                 {characterDetails.map((detail) => (
-                                    <div key={detail.label}>
-                                        <span className="font-medium text-gray-700">{detail.label}:</span>{' '}
-                                        <span className="text-gray-900">{detail.value}</span>
+                                    <div key={detail.label} className="text-sm text-black">
+                                        <span>{detail.label}:</span>{' '}
+                                        <span>{detail.value}</span>
                                     </div>
                                 ))}
                             </div>
@@ -76,32 +75,35 @@ function CharacterDetail({ character, error }: Props) {
 
                         {/* Right Column - Movies */}
                         <div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                            <h3 className="text-xl font-semibold text-gray-900 mb-[10px] block">
                                 Movies
                             </h3>
+                            <div className="w-full h-px mt-2 mb-4" style={{ backgroundColor: 'var(--color-pinkish-grey)' }} />
                             {character.movies && character.movies.length > 0 ? (
-                                <div className="space-y-2">
-                                    {character.movies.map((movie) => (
-                                        <div key={movie.id}>
+                                <div className="text-base">
+                                    {character.movies.map((movie, index) => (
+                                        <span key={movie.id}>
                                             <Link
                                                 href={`/movies/${movie.id}`}
-                                                className="text-blue-600 hover:text-blue-800 underline"
+                                                className="text-blue-500 hover:text-blue-800"
                                             >
                                                 {movie.title}
                                             </Link>
-                                        </div>
+                                            {index < (character.movies?.length ?? 0) - 1 && ', '}
+                                        </span>
                                     ))}
                                 </div>
                             ) : (
-                                <p className="text-gray-500">No movies found</p>
+                                <p className="text-xs text-black">No movies found</p>
                             )}
                         </div>
                     </div>
 
-                    <div className="mt-8 text-center">
+                    <div className="mt-8">
                         <Link
                             href="/"
-                            className="inline-block bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-md transition-colors"
+                            className="inline-block bg-green-600 hover:bg-green-700 text-white font-bold font-montserrat py-2 px-6 rounded-md transition-colors uppercase"
+                            style={{ backgroundColor: 'var(--color-green-teal)' }}
                         >
                             BACK TO SEARCH
                         </Link>

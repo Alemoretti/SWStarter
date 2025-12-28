@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { Link } from '@inertiajs/react';
 import ErrorDisplay from '@/Components/ErrorDisplay';
+import Header from '@/Components/Header';
 
 interface Character {
     id: number;
@@ -26,26 +27,23 @@ function MovieDetail({ movie, error }: Props) {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <div className="container mx-auto px-4 py-8">
-                <h1 className="text-3xl font-bold text-green-600 mb-8 text-center">
-                    SWStarter
-                </h1>
-
-                <div className="bg-white rounded-lg shadow p-6 max-w-4xl mx-auto">
-                    <h2 className="text-2xl font-semibold text-gray-900 mb-6">
+            <Header />
+            <div className="container mx-auto px-4 py-8" style={{ maxWidth: '1200px' }}>
+                <div className="bg-white rounded-lg shadow p-8 max-w-4xl mx-auto">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-6">
                         {movie.title}
                     </h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {/* Left Column - Details */}
                         <div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                                Details
+                            <h3 className="text-xl font-semibold text-gray-900 mb-[10px] block">
+                                Opening Crawl
                             </h3>
-                            <div className="space-y-3">
-                                <div>
-                                    <span className="font-medium text-gray-700">Opening Crawl:</span>
-                                    <p className="text-gray-900 mt-2 whitespace-pre-line">
+                            <div className="w-full h-px mt-2 mb-4" style={{ backgroundColor: 'var(--color-pinkish-grey)' }} />
+                            <div>
+                                <div className="text-sm text-black">
+                                    <p className="mt-2 whitespace-pre-line text-base">
                                         {movie.opening_crawl}
                                     </p>
                                 </div>
@@ -54,32 +52,35 @@ function MovieDetail({ movie, error }: Props) {
 
                         {/* Right Column - Characters */}
                         <div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                            <h3 className="text-xl font-semibold text-gray-900 mb-[10px] block">
                                 Characters
                             </h3>
+                            <div className="w-full h-px mt-2 mb-4" style={{ backgroundColor: 'var(--color-pinkish-grey)' }} />
                             {movie.characters && movie.characters.length > 0 ? (
-                                <div className="space-y-2">
-                                    {movie.characters.map((character) => (
-                                        <div key={character.id}>
+                                <div className="text-base">
+                                    {movie.characters.map((character, index) => (
+                                        <span key={character.id}>
                                             <Link
                                                 href={`/characters/${character.id}`}
-                                                className="text-blue-600 hover:text-blue-800 underline"
+                                                className="text-blue-500 hover:text-blue-800"
                                             >
                                                 {character.name}
                                             </Link>
-                                        </div>
+                                            {index < (movie.characters?.length ?? 0) - 1 && ', '}
+                                        </span>
                                     ))}
                                 </div>
                             ) : (
-                                <p className="text-gray-500">No characters found</p>
+                                <p className="text-xs text-black">No characters found</p>
                             )}
                         </div>
                     </div>
                               
-                    <div className="mt-8 text-center">
+                    <div className="mt-8">
                         <Link
                             href="/"
-                            className="inline-block bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-md transition-colors"
+                            className="inline-block bg-green-600 hover:bg-green-700 text-white font-bold font-montserrat py-2 px-6 rounded-md transition-colors uppercase"
+                            style={{ backgroundColor: 'var(--color-green-teal)' }}
                         >
                             BACK TO SEARCH
                         </Link>
