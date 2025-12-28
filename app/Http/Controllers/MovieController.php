@@ -50,7 +50,7 @@ class MovieController extends Controller
             $movieData = (new MovieResource($movie))->resolve();
             $movieData['characters'] = $characters;
 
-            return Inertia::render('Search/MovieDetail', [
+            return Inertia::render('MovieDetail', [
                 'movie' => $movieData,
             ]);
         } catch (\Exception $e) {
@@ -76,7 +76,7 @@ class MovieController extends Controller
             }
 
             // Return Inertia response with error for web requests
-            return Inertia::render('Search/MovieDetail', [
+            return Inertia::render('MovieDetail', [
                 'error' => $message,
             ])->toResponse($request)->setStatusCode($statusCode);
         }
