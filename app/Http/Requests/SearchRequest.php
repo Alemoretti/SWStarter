@@ -16,6 +16,7 @@ class SearchRequest extends FormRequest
         return [
             'query' => ['required', 'string', 'min:1', 'max:255'],
             'type' => ['required', 'in:people,movies'],
+            'page' => ['sometimes', 'integer', 'min:1'],
         ];
     }
 }
