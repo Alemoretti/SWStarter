@@ -58,7 +58,7 @@ class MovieController extends Controller
             $message = 'Movie not found';
 
             // Extract status code from exception message
-            if (preg_match('/: (\d+)$/', $e->getMessage(), $matches)) {
+            if (preg_match('/Failed to fetch movie: (\d+)$/', $e->getMessage(), $matches)) {
                 $statusCode = (int) $matches[1];
                 if ($statusCode >= 500) {
                     $message = 'External API error';
