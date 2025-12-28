@@ -40,9 +40,14 @@ export default function SearchIndex({ query: initialQuery = '', type: initialTyp
         initialType === 'movies' ? resultsCount : undefined
     );
 
-    // Update the results state when new results arrive from server
+    // Update the appropriate results state when new results arrive from server
     useEffect(() => {
-        if (results !== undefined) {
+        if (results === undefined) {
+            return;
+        }
+
+        // Use setTimeout to defer state updates and avoid cascading renders
+        const timeoutId = setTimeout(() => {
             if (type === 'people') {
                 setPeopleResults(results);
                 setPeopleResultsCount(resultsCount);
@@ -50,7 +55,9 @@ export default function SearchIndex({ query: initialQuery = '', type: initialTyp
                 setMoviesResults(results);
                 setMoviesResultsCount(resultsCount);
             }
-        }
+        }, 0);
+
+        return () => clearTimeout(timeoutId);
     }, [results, resultsCount, type]);
 
     // Memoize placeholder text to avoid recalculation

@@ -22,17 +22,17 @@ class MovieController extends Controller
     {
         try {
             $movie = $this->swapiService->getMovieById($id);
-    
+
             // Return JSON for API requests
             if ($request->wantsJson()) {
                 return response()->json([
                     'data' => new MovieResource($movie),
                 ]);
             }
-    
+
             // Fetch character details for web requests
             $characters = [];
-            if (!$request->wantsJson()) {
+            if (! $request->wantsJson()) {
                 foreach ($movie->characters as $characterUrl) {
                     $character = $this->swapiService->getCharacter(
                         $this->extractIdFromUrl($characterUrl)
@@ -45,18 +45,18 @@ class MovieController extends Controller
                     }
                 }
             }
-    
+
             // Return Inertia response for web requests
             $movieData = (new MovieResource($movie))->resolve();
             $movieData['characters'] = $characters;
-    
+
             return Inertia::render('Search/MovieDetail', [
                 'movie' => $movieData,
             ]);
         } catch (\Exception $e) {
             $statusCode = 404;
             $message = 'Movie not found';
-    
+
             // Extract status code from exception message
             if (preg_match('/: (\d+)$/', $e->getMessage(), $matches)) {
                 $statusCode = (int) $matches[1];
@@ -66,26 +66,27 @@ class MovieController extends Controller
                     $message = 'Movie not found';
                 }
             }
-    
+
             // Return JSON for API requests
             if ($request->wantsJson()) {
                 return response()->json([
                     'error' => $message,
                 ], $statusCode);
             }
-    
+
             // Return Inertia response with error for web requests
             return Inertia::render('Search/MovieDetail', [
                 'error' => $message,
             ])->toResponse($request)->setStatusCode($statusCode);
         }
     }
-    
+
     private function extractIdFromUrl(string $url): int
     {
         if (preg_match('/\/(\d+)\/?$/', $url, $matches)) {
             return (int) $matches[1];
         }
+
         return 0;
     }
 }

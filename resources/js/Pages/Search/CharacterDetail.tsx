@@ -26,22 +26,25 @@ interface Props {
 }
 
 function CharacterDetail({ character, error }: Props) {
+    // Memoize character details to avoid recalculation
+    const characterDetails = useMemo(
+        () => {
+            if (!character) return [];
+            return [
+                { label: 'Birth Year', value: character.birth_year || 'Unknown' },
+                { label: 'Gender', value: character.gender },
+                { label: 'Eye Color', value: character.eye_color },
+                { label: 'Hair Color', value: character.hair_color },
+                ...(character.height !== null ? [{ label: 'Height', value: character.height }] : []),
+                ...(character.mass !== null ? [{ label: 'Mass', value: character.mass }] : []),
+            ];
+        },
+        [character]
+    );
+
     if (error || !character) {
         return <ErrorDisplay error={error || 'Character not found'} />;
     }
-
-    // Memoize character details to avoid recalculation
-    const characterDetails = useMemo(
-        () => [
-            { label: 'Birth Year', value: character.birth_year || 'Unknown' },
-            { label: 'Gender', value: character.gender },
-            { label: 'Eye Color', value: character.eye_color },
-            { label: 'Hair Color', value: character.hair_color },
-            ...(character.height !== null ? [{ label: 'Height', value: character.height }] : []),
-            ...(character.mass !== null ? [{ label: 'Mass', value: character.mass }] : []),
-        ],
-        [character]
-    );
 
     return (
         <div className="min-h-screen bg-gray-100">

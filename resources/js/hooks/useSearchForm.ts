@@ -38,9 +38,9 @@ export function useSearchForm({
 
         if (!result.success) {
             const fieldErrors: Record<string, string> = {};
-            result.error.issues.forEach((error) => {
-                if (error.path[0]) {
-                    fieldErrors[error.path[0].toString()] = error.message;
+            result.error.issues.forEach((issue) => {
+                if (issue.path[0]) {
+                    fieldErrors[issue.path[0].toString()] = issue.message;
                 }
             });
             setErrors(fieldErrors);
