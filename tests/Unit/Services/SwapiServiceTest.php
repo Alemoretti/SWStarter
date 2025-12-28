@@ -138,7 +138,7 @@ class SwapiServiceTest extends TestCase
         $service = SwapiService::make();
 
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Failed to fetch character: 1');
+        $this->expectExceptionMessageMatches('/SWAPI request failed with status 404/');
 
         $service->getCharacter(1);
     }

@@ -19,6 +19,8 @@ class SwapiClient
      *
      * @param  array<string, mixed>  $queryParams
      * @return array<string, mixed>|null
+     *
+     * @throws \Exception When the request fails, includes status code in message
      */
     public function get(string $endpoint, array $queryParams = []): ?array
     {
@@ -26,14 +28,16 @@ class SwapiClient
         $response = Http::get($url, $queryParams);
 
         if (! $response->successful()) {
+            $statusCode = $response->status();
+
             Log::warning('SWAPI request failed', [
                 'url' => $url,
                 'query_params' => $queryParams,
-                'status' => $response->status(),
+                'status' => $statusCode,
                 'body' => $response->body(),
             ]);
 
-            return null;
+            throw new \Exception("SWAPI request failed with status {$statusCode}: {$url}");
         }
 
         return $response->json();
