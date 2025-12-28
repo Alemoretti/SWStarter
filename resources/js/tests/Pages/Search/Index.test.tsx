@@ -64,11 +64,12 @@ describe('SearchIndex', () => {
         expect(moviesRadio).toBeChecked();
     });
 
-    it('displays "No search performed yet" when no results', () => {
+    it('displays "There are zero matches" when no search performed', () => {
         render(<SearchIndex />);
 
         // Activity renders both panels, so we check for at least one instance
-        expect(screen.getAllByText('No search performed yet.').length).toBeGreaterThan(0);
+        expect(screen.getAllByText(/There are zero matches/).length).toBeGreaterThan(0);
+        expect(screen.getAllByText(/Use the form to search for People or Movies/).length).toBeGreaterThan(0);
     });
 
     it('displays search results when provided', () => {
@@ -87,7 +88,9 @@ describe('SearchIndex', () => {
     it('displays "There are zero matches" when search returns no results', () => {
         render(<SearchIndex results={[]} resultsCount={0} query="nonexistent" />);
 
-        expect(screen.getByText('There are zero matches.')).toBeInTheDocument();
+        // Activity renders both panels, so we check for at least one instance
+        expect(screen.getAllByText(/There are zero matches/).length).toBeGreaterThan(0);
+        expect(screen.getAllByText(/Use the form to search for People or Movies/).length).toBeGreaterThan(0);
     });
 
     it('displays movie results correctly', () => {
@@ -102,16 +105,24 @@ describe('SearchIndex', () => {
         expect(screen.getByText('The Empire Strikes Back')).toBeInTheDocument();
     });
 
-    it('shows validation error when submitting empty query', async () => {
+    it('disables search button when input is empty', () => {
         render(<SearchIndex />);
 
         const submitButton = screen.getByRole('button', { name: /search/i });
-        fireEvent.click(submitButton);
+        expect(submitButton).toBeDisabled();
+    });
 
-        await waitFor(() => {
-            const input = screen.getByRole('textbox');
-            expect(input).toHaveClass('border-red-500');
-        });
+    it('enables search button when input has value', () => {
+        render(<SearchIndex />);
+
+        const input = screen.getByRole('textbox') as HTMLInputElement;
+        const submitButton = screen.getByRole('button', { name: /search/i });
+
+        expect(submitButton).toBeDisabled();
+
+        fireEvent.change(input, { target: { value: 'luke' } });
+
+        expect(submitButton).not.toBeDisabled();
     });
 
     it('shows loading state when form is submitted', async () => {
@@ -142,4 +153,5 @@ describe('SearchIndex', () => {
         );
     });
 });
+
 
