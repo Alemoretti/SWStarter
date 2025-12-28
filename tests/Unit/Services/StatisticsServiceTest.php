@@ -23,9 +23,14 @@ class StatisticsServiceTest extends TestCase
         $statistics = $service->compute();
 
         $this->assertIsArray($statistics['top_queries']);
-        $this->assertCount(3, $statistics['top_queries']); // Top 5, but there are 3 unique queries
+        $this->assertCount(3, $statistics['top_queries']); // Top 5, but there are 3 unique query+type combinations
         $this->assertEquals('luke', $statistics['top_queries'][0]['query']);
+        $this->assertEquals('people', $statistics['top_queries'][0]['type']);
         $this->assertEquals(2, $statistics['top_queries'][0]['count']);
+        // Verify movies search is included
+        $hopeQuery = collect($statistics['top_queries'])->firstWhere('query', 'hope');
+        $this->assertNotNull($hopeQuery);
+        $this->assertEquals('movies', $hopeQuery['type']);
     }
 
     public function test_compute_statistics_calculates_average_response_time(): void

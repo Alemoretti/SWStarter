@@ -14,8 +14,8 @@ class SearchStatisticTest extends TestCase
     {
         $statistic = SearchStatistic::create([
             'top_queries' => [
-                ['query' => 'luke', 'count' => 10, 'percentage' => 25.5],
-                ['query' => 'yoda', 'count' => 5, 'percentage' => 12.5],
+                ['query' => 'luke', 'type' => 'people', 'count' => 10, 'percentage' => 25.5],
+                ['query' => 'yoda', 'type' => 'people', 'count' => 5, 'percentage' => 12.5],
             ],
             'avg_response_time' => 150.75,
             'popular_hour' => 14,
@@ -32,7 +32,7 @@ class SearchStatisticTest extends TestCase
     {
         $statistic = SearchStatistic::create([
             'top_queries' => [
-                ['query' => 'luke', 'count' => 10],
+                ['query' => 'luke', 'type' => 'people', 'count' => 10],
             ],
             'avg_response_time' => 150.75,
             'popular_hour' => 14,

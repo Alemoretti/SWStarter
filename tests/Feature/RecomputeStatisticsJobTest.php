@@ -27,6 +27,7 @@ class RecomputeStatisticsJobTest extends TestCase
         $this->assertIsArray($statistic->top_queries);
         $this->assertCount(1, $statistic->top_queries);
         $this->assertEquals('luke', $statistic->top_queries[0]['query']);
+        $this->assertEquals('people', $statistic->top_queries[0]['type']);
         $this->assertEquals(125.0, $statistic->avg_response_time);
     }
 

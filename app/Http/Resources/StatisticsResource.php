@@ -16,7 +16,7 @@ class StatisticsResource extends JsonResource
     {
         return [
             'top_queries' => $this->topQueries,
-            'avg_response_time' => $this->avgResponseTime,
+            'avg_response_time_ms' => $this->avgResponseTime,
             'popular_hour' => $this->popularHour,
         ];
     }
