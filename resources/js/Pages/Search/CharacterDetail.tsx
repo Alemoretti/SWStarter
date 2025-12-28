@@ -65,7 +65,7 @@ function CharacterDetail({ character, error }: Props) {
                             <div className="w-full h-px mt-2 mb-4" style={{ backgroundColor: 'var(--color-pinkish-grey)' }} />
                             <div>
                                 {characterDetails.map((detail) => (
-                                    <div key={detail.label} className="text-sm text-black">
+                                    <div key={detail.label} className="text-base text-black">
                                         <span>{detail.label}:</span>{' '}
                                         <span>{detail.value}</span>
                                     </div>

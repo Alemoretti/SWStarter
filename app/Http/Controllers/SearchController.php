@@ -25,33 +25,52 @@ class SearchController extends Controller
     {
         $startTime = microtime(true);
 
-        $query = $request->validated()['query'];
-        $type = $request->validated()['type'];
+        $validated = $request->validated();
+        $query = $validated['query'];
+        $type = $validated['type'];
+        $page = $validated['page'] ?? 1;
+        $perPage = 10;
 
         if ($type === 'people') {
             $results = $this->swapiService->searchPeople($query);
-            $resources = CharacterResource::collection($results);
         } else {
             $results = $this->swapiService->searchFilms($query);
-            $resources = MovieResource::collection($results);
         }
 
         $responseTime = (int) ((microtime(true) - $startTime) * 1000);
-        $resultsCount = count($results);
+        $totalResults = count($results);
+        $totalPages = (int) ceil($totalResults / $perPage);
+
+        // Paginate results
+        $offset = ($page - 1) * $perPage;
+        $paginatedResults = array_slice($results, $offset, $perPage);
+
+        // Create resources from paginated results
+        if ($type === 'people') {
+            $resources = CharacterResource::collection($paginatedResults);
+        } else {
+            $resources = MovieResource::collection($paginatedResults);
+        }
 
         SearchQuery::create([
             'query' => $query,
             'type' => $type,
-            'results_count' => $resultsCount,
+            'results_count' => $totalResults,
             'response_time_ms' => $responseTime,
         ]);
 
-        event(new SearchPerformed($query, $type, $resultsCount));
+        event(new SearchPerformed($query, $type, $totalResults));
 
         // Return Inertia response for web requests, JSON for API
         if ($request->wantsJson()) {
             return response()->json([
                 'data' => $resources,
+                'meta' => [
+                    'current_page' => $page,
+                    'per_page' => $perPage,
+                    'total' => $totalResults,
+                    'total_pages' => $totalPages,
+                ],
             ]);
         }
 
@@ -59,7 +78,13 @@ class SearchController extends Controller
             'query' => $query,
             'type' => $type,
             'results' => $resources->resolve(),
-            'resultsCount' => $resultsCount,
+            'resultsCount' => $totalResults,
+            'pagination' => [
+                'current_page' => $page,
+                'per_page' => $perPage,
+                'total' => $totalResults,
+                'total_pages' => $totalPages,
+            ],
         ]);
     }
 }

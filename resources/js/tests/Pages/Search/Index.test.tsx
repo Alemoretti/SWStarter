@@ -148,7 +148,7 @@ describe('SearchIndex', () => {
         // Verify router.get was called
         expect(mockGet).toHaveBeenCalledWith(
             '/api/v1/search',
-            { query: 'luke', type: 'people' },
+            { query: 'luke', type: 'people', page: 1 },
             expect.any(Object)
         );
     });
