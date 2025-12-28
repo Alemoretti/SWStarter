@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Events\SearchPerformed;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
@@ -14,6 +15,7 @@ class SearchEventTest extends TestCase
 
     public function test_search_performed_event_is_fired(): void
     {
+        Cache::flush();
         Event::fake();
 
         Http::fake([
@@ -36,6 +38,7 @@ class SearchEventTest extends TestCase
 
     public function test_search_performed_event_contains_correct_data(): void
     {
+        Cache::flush();
         Event::fake();
 
         Http::fake([
@@ -49,6 +52,7 @@ class SearchEventTest extends TestCase
                     'height' => '172',
                     'mass' => '77',
                     'films' => [],
+                    'url' => 'https://swapi.dev/api/people/1/',
                 ]],
             ], 200),
         ]);
