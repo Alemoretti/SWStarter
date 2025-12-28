@@ -23,26 +23,26 @@ function SearchTypeRadioButtons({ type, onChange, disabled = false }: SearchType
     return (
         <div className="mb-4">
             <div className="flex gap-4">
-                <label className="flex items-center font-bold">
+                <label className={`flex items-center font-bold ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
                     <input
                         type="radio"
                         name="type"
                         value="people"
                         checked={type === 'people'}
                         onChange={handleChange}
-                        className="mr-2"
+                        className={`mr-2 ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                         disabled={disabled}
                     />
                     People
                 </label>
-                <label className="flex items-center font-bold">
+                <label className={`flex items-center font-bold ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
                     <input
                         type="radio"
                         name="type"
                         value="movies"
                         checked={type === 'movies'}
                         onChange={handleChange}
-                        className="mr-2"
+                        className={`mr-2 ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                         disabled={disabled}
                     />
                     Movies

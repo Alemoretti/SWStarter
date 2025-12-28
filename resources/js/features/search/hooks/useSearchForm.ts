@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { router } from '@inertiajs/react';
-import { searchSchema } from '@/schemas/searchSchema';
+import { searchSchema } from '@/features/search/schemas/searchSchema';
 
 interface UseSearchFormOptions {
     initialQuery?: string;

@@ -1,6 +1,6 @@
 import React, { Component, ReactNode } from 'react';
 import { Link } from '@inertiajs/react';
-import Header from './Header';
+import Header from '@/components/layout/Header';
 
 interface Props {
     children: ReactNode;

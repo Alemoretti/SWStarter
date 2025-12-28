@@ -1,7 +1,7 @@
 import { useMemo, memo } from 'react';
 import { Link } from '@inertiajs/react';
-import ErrorDisplay from '@/Components/ErrorDisplay';
-import Header from '@/Components/Header';
+import ErrorDisplay from '@/components/ui/ErrorDisplay';
+import Header from '@/components/layout/Header';
 
 interface Movie {
     id: number;

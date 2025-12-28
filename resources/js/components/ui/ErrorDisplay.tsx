@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import Header from './Header';
+import Header from '@/components/layout/Header';
 
 interface ErrorDisplayProps {
     error: string;
