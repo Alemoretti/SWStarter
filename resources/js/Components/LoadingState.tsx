@@ -4,7 +4,7 @@ interface LoadingStateProps {
 
 export default function LoadingState({ message = 'Loading...' }: LoadingStateProps) {
     return (
-        <div className="text-center text-gray-400 py-8">
+        <div className="text-center text-gray-400 py-8 text-basefont-bold">
             {message}
         </div>
     );
