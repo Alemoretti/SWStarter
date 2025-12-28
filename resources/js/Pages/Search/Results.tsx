@@ -43,7 +43,7 @@ export default function SearchResults({ query, type, results, resultsCount }: Pr
                         {results.map((result) => (
                             <div
                                 key={result.id}
-                                className="bg-white rounded-lg shadow p-6"
+                                className="bg-white rounded-lg shadow p-8"
                             >
                                 <h2 className="text-xl font-semibold text-gray-900 mb-2">
                                     {result.name || result.title}

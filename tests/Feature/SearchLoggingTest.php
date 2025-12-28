@@ -71,8 +71,8 @@ class SearchLoggingTest extends TestCase
         Http::fake([
             '*/api/people*' => Http::response([
                 'results' => [
-                    ['name' => 'Luke', 'birth_year' => '19BBY', 'gender' => 'male', 'eye_color' => 'blue', 'hair_color' => 'blond', 'height' => '172', 'mass' => '77', 'films' => [], 'url' => 'https://swapi.dev/api/people/1/'],
-                    ['name' => 'Yoda', 'birth_year' => '896BBY', 'gender' => 'male', 'eye_color' => 'brown', 'hair_color' => 'white', 'height' => '66', 'mass' => '17', 'films' => [], 'url' => 'https://swapi.dev/api/people/2/'],
+                    ['name' => 'Test Character 1', 'birth_year' => '19BBY', 'gender' => 'male', 'eye_color' => 'blue', 'hair_color' => 'blond', 'height' => '172', 'mass' => '77', 'films' => [], 'url' => 'https://swapi.dev/api/people/1/'],
+                    ['name' => 'Test Character 2', 'birth_year' => '896BBY', 'gender' => 'male', 'eye_color' => 'brown', 'hair_color' => 'white', 'height' => '66', 'mass' => '17', 'films' => [], 'url' => 'https://swapi.dev/api/people/2/'],
                 ],
             ], 200),
         ]);

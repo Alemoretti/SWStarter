@@ -14,11 +14,16 @@ function SearchButton({ isLoading, disabled = false }: SearchButtonProps) {
         <button
             type="submit"
             disabled={disabled || isLoading}
-            className={`w-full py-2 px-4 rounded-md font-medium ${
+            className={`w-full h-[34px] px-4 text-sm rounded-full font-bold font-montserrat uppercase text-white flex items-center justify-center ${
                 isLoading || disabled
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-green-600 hover:bg-green-700'
-            } text-white transition-colors uppercase`}
+                    ? 'cursor-not-allowed'
+                    : 'transition-colors'
+            }`}
+            style={
+                !isLoading && !disabled
+                    ? { backgroundColor: 'var(--color-green-teal)' }
+                    : { backgroundColor: 'var(--color-pinkish-grey)' }
+            }
         >
             {isLoading ? 'SEARCHING...' : 'SEARCH'}
         </button>

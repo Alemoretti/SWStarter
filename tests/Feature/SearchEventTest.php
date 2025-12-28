@@ -58,12 +58,12 @@ class SearchEventTest extends TestCase
         ]);
 
         $this->postJson('/api/v1/search', [
-            'query' => 'test',
+            'query' => 'luke',
             'type' => 'people',
         ]);
 
         Event::assertDispatched(SearchPerformed::class, function ($event) {
-            return $event->query === 'test'
+            return $event->query === 'luke'
                 && $event->type === 'people'
                 && $event->resultsCount === 1;
         });

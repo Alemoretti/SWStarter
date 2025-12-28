@@ -27,7 +27,7 @@ function SearchInput({ value, onChange, placeholder, error, disabled = false }: 
                 id="query"
                 value={value}
                 onChange={handleChange}
-                className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 font-bold shadow-[inset_0_1px_0_0_rgba(0,0,0,0.1)] ${
                     error ? 'border-red-500' : 'border-gray-300'
                 }`}
                 placeholder={placeholder}

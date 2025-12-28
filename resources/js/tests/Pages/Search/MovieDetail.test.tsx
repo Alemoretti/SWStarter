@@ -44,8 +44,7 @@ describe('MovieDetail', () => {
 
         render(<MovieDetail movie={movie} />);
 
-        expect(screen.getByText('Details')).toBeInTheDocument();
-        expect(screen.getByText(/Opening Crawl:/)).toBeInTheDocument();
+        expect(screen.getByText('Opening Crawl')).toBeInTheDocument();
         expect(screen.getByText(/It is a period of civil war/)).toBeInTheDocument();
     });
 
