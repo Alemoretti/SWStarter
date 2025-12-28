@@ -12,8 +12,10 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd \
-    && docker-php-ext-enable pdo_mysql mbstring exif pcntl bcmath gd
+    libzip-dev \
+    pkg-config \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip \
+    && docker-php-ext-enable pdo_mysql mbstring exif pcntl bcmath gd zip
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -27,6 +29,13 @@ RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
 RUN mkdir -p /var/www/.npm && \
     chown -R www-data:www-data /var/www/.npm && \
     npm config set cache /var/www/.npm --global
+
+# Create psysh config directory with proper permissions
+RUN mkdir -p /var/www/.config/psysh && \
+    chown -R www-data:www-data /var/www/.config
+
+# Install Redis PHP extension
+RUN pecl install redis && docker-php-ext-enable redis
 
 # Copy existing application directory permissions
 RUN chown -R www-data:www-data /var/www/html
