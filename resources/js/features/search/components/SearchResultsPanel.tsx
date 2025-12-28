@@ -1,7 +1,7 @@
 import { memo } from 'react';
-import LoadingState from './LoadingState';
+import LoadingState from '@/components/ui/LoadingState';
 import SearchResultItem from './SearchResultItem';
-import Pagination from './Pagination';
+import Pagination from '@/components/pagination';
 
 interface Result {
     id: number;

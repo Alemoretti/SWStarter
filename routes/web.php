@@ -9,7 +9,7 @@ use Inertia\Inertia;
 
 // Get routes
 Route::get('/', function () {
-    return Inertia::render('Search/Index');
+    return Inertia::render('Index');
 });
 Route::get('/characters/{id}', [CharacterController::class, 'show']);
 Route::get('/movies/{id}', [MovieController::class, 'show']);

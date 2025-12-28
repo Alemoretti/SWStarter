@@ -4,7 +4,7 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import CharacterDetail from '@/Pages/Search/CharacterDetail';
+import CharacterDetail from '@/features/search/pages/CharacterDetail';
 
 // Mock Inertia.js Link component
 vi.mock('@inertiajs/react', () => ({

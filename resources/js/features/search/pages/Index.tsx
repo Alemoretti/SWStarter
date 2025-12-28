@@ -1,9 +1,9 @@
 import { useMemo, useState, useEffect } from 'react';
 import { Activity } from 'react';
-import { useSearchForm } from '@/hooks/useSearchForm';
-import SearchResultsPanel from '@/Components/SearchResultsPanel';
-import SearchPanel from '@/Components/SearchPanel';
-import Header from '@/Components/Header';
+import { useSearchForm } from '@/features/search/hooks/useSearchForm';
+import SearchResultsPanel from '@/features/search/components/SearchResultsPanel';
+import SearchPanel from '@/features/search/components/SearchPanel';
+import Header from '@/components/layout/Header';
 
 interface Result {
     id: number;

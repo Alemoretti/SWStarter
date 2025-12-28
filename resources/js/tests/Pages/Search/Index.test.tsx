@@ -4,7 +4,7 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import SearchIndex from '@/Pages/Search/Index';
+import SearchIndex from '@/features/search/pages/Index';
 
 // Mock Inertia.js router and Link components to avoid actual navigation
 vi.mock('@inertiajs/react', () => ({

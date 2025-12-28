@@ -48,7 +48,7 @@ class CharacterController extends Controller
             $characterData = (new CharacterResource($character))->resolve();
             $characterData['movies'] = $movies;
 
-            return Inertia::render('Search/CharacterDetail', [
+            return Inertia::render('CharacterDetail', [
                 'character' => $characterData,
             ]);
         } catch (\Exception $e) {
@@ -74,7 +74,7 @@ class CharacterController extends Controller
             }
 
             // Return Inertia response with error for web requests
-            return Inertia::render('Search/CharacterDetail', [
+            return Inertia::render('CharacterDetail', [
                 'error' => $message,
             ])->toResponse($request)->setStatusCode($statusCode);
         }

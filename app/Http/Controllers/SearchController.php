@@ -74,7 +74,7 @@ class SearchController extends Controller
             ]);
         }
 
-        return Inertia::render('Search/Index', [
+        return Inertia::render('Index', [
             'query' => $query,
             'type' => $type,
             'results' => $resources->resolve(),
