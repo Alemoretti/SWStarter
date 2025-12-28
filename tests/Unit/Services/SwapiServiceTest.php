@@ -4,6 +4,7 @@ namespace Tests\Unit\Services;
 
 use App\DTOs\CharacterDto;
 use App\DTOs\MovieDto;
+use App\Services\SwapiClient;
 use App\Services\SwapiService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -28,7 +29,7 @@ class SwapiServiceTest extends TestCase
             ], 200),
         ]);
 
-        $service = new SwapiService;
+        $service = SwapiService::make();
         $results = $service->searchPeople('luke');
 
         $this->assertIsArray($results);
@@ -45,7 +46,7 @@ class SwapiServiceTest extends TestCase
             '*/api/people*' => Http::response([], 500),
         ]);
 
-        $service = new SwapiService;
+        $service = SwapiService::make();
         $results = $service->searchPeople('luke');
 
         $this->assertIsArray($results);
@@ -72,7 +73,7 @@ class SwapiServiceTest extends TestCase
             ], 200),
         ]);
 
-        $service = new SwapiService;
+        $service = SwapiService::make();
 
         // First call - should hit API
         $service->searchPeople('luke');
@@ -96,7 +97,7 @@ class SwapiServiceTest extends TestCase
             ], 200),
         ]);
 
-        $service = new SwapiService;
+        $service = SwapiService::make();
         $results = $service->searchFilms('hope'); // Method name uses "Films" because SWAPI endpoint is /films
 
         $this->assertIsArray($results);
@@ -120,7 +121,7 @@ class SwapiServiceTest extends TestCase
             ], 200),
         ]);
 
-        $service = new SwapiService;
+        $service = SwapiService::make();
         $character = $service->getCharacter(1);
 
         $this->assertInstanceOf(CharacterDto::class, $character);
@@ -135,10 +136,10 @@ class SwapiServiceTest extends TestCase
             '*/api/people/1' => Http::response([], 404),
         ]);
 
-        $service = new SwapiService;
+        $service = SwapiService::make();
 
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('404');
+        $this->expectExceptionMessage('Failed to fetch character: 1');
 
         $service->getCharacter(1);
     }
@@ -153,7 +154,7 @@ class SwapiServiceTest extends TestCase
             ], 200),
         ]);
 
-        $service = new SwapiService;
+        $service = SwapiService::make();
         $movie = $service->getMovie('https://swapi.dev/api/films/1/');
 
         $this->assertInstanceOf(MovieDto::class, $movie);

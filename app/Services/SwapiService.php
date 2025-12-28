@@ -5,20 +5,32 @@ namespace App\Services;
 use App\DTOs\CharacterDto;
 use App\DTOs\MovieDto;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http;
 
 class SwapiService
 {
     private const CACHE_TTL = 3600; // 1 hour
 
-    private function getBaseUrl(): string
+    public function __construct(
+        private readonly SwapiClient $client
+    ) {}
+
+    /**
+     * Create a new instance with default client.
+     *
+     * @return self
+     */
+    public static function make(): self
     {
-        return config('services.swapi.base_url', 'https://swapi.dev/api');
+        $baseUrl = config('services.swapi.base_url', 'https://swapi.dev/api');
+        $client = new SwapiClient($baseUrl);
+
+        return new self($client);
     }
 
     /**
      * Search for people in SWAPI.
      *
+     * @param  string  $query
      * @return array<int, CharacterDto>
      */
     public function searchPeople(string $query): array
@@ -33,46 +45,30 @@ class SwapiService
     /**
      * Fetch people from SWAPI.
      *
+     * @param  string  $query
      * @return array<int, CharacterDto>
      */
     private function fetchPeople(string $query): array
     {
-        $url = $this->getBaseUrl().'/people';
-        $response = Http::get($url, ['search' => $query]);
+        $data = $this->client->get('people', ['search' => $query]);
 
-        if (! $response->successful()) {
-            \Log::warning('SWAPI search failed', [
-                'url' => $url,
-                'query' => $query,
-                'status' => $response->status(),
-                'body' => $response->body(),
-            ]);
-
+        if ($data === null) {
             return [];
         }
 
-        $data = $response->json();
-
-        // Handle both response formats:
-        // swapi.dev returns: {"results": [...]}
-        // swapi.info returns: [...]
-        $results = is_array($data) && isset($data[0]) && ! isset($data['results'])
-            ? $data  // Direct array format (swapi.info)
-            : ($data['results'] ?? []);  // Wrapped format (swapi.dev)
-
-        if (! is_array($results) || empty($results)) {
-            return [];
-        }
+        $results = $this->client->extractResults($data);
+        $filtered = $this->client->filterResults($results, $query, 'name');
 
         return array_map(
             fn ($item) => CharacterDto::fromSwapi($item),
-            $results
+            $filtered
         );
     }
 
     /**
      * Search for films in SWAPI.
      *
+     * @param  string  $query
      * @return array<int, MovieDto>
      */
     public function searchFilms(string $query): array
@@ -87,92 +83,88 @@ class SwapiService
     /**
      * Fetch films from SWAPI.
      *
+     * @param  string  $query
      * @return array<int, MovieDto>
      */
     private function fetchFilms(string $query): array
     {
-        $url = $this->getBaseUrl().'/films';
-        $response = Http::get($url, ['search' => $query]);
+        $data = $this->client->get('films', ['search' => $query]);
 
-        if (! $response->successful()) {
-            \Log::warning('SWAPI search failed', [
-                'url' => $url,
-                'query' => $query,
-                'status' => $response->status(),
-                'body' => $response->body(),
-            ]);
-
+        if ($data === null) {
             return [];
         }
 
-        $data = $response->json();
-
-        // Handle both response formats:
-        // swapi.dev returns: {"results": [...]}
-        // swapi.info returns: [...]
-        $results = is_array($data) && isset($data[0]) && ! isset($data['results'])
-            ? $data  // Direct array format (swapi.info)
-            : ($data['results'] ?? []);  // Wrapped format (swapi.dev)
-
-        if (! is_array($results) || empty($results)) {
-            return [];
-        }
+        $results = $this->client->extractResults($data);
+        $filtered = $this->client->filterResults($results, $query, 'title');
 
         return array_map(
             fn ($item) => MovieDto::fromSwapi($item),
-            $results
+            array_values($filtered)
         );
     }
 
     /**
      * Get a single character by ID.
+     *
+     * @param  int  $id
+     * @return CharacterDto
+     * @throws \Exception
      */
     public function getCharacter(int $id): CharacterDto
     {
-        $baseUrl = $this->getBaseUrl();
-        $response = Cache::remember("swapi_people_{$id}", 3600, function () use ($id, $baseUrl) {
-            $response = Http::get("{$baseUrl}/people/{$id}");
+        $data = Cache::remember("swapi_people_{$id}", 3600, function () use ($id) {
+            $response = $this->client->get("people/{$id}");
 
-            if ($response->failed()) {
-                throw new \Exception("Failed to fetch character: {$response->status()}");
+            if ($response === null) {
+                throw new \Exception("Failed to fetch character: {$id}");
             }
 
-            return $response->json();
+            return $response;
         });
 
-        return CharacterDto::fromSwapi($response);
+        return CharacterDto::fromSwapi($data);
     }
 
     /**
      * Get a single movie by ID.
+     *
+     * @param  int  $id
+     * @return MovieDto
+     * @throws \Exception
      */
     public function getMovieById(int $id): MovieDto
     {
-        $baseUrl = $this->getBaseUrl();
-        $response = Cache::remember("swapi_films_{$id}", 3600, function () use ($id, $baseUrl) {
-            $httpResponse = Http::get("{$baseUrl}/films/{$id}");
+        $data = Cache::remember("swapi_films_{$id}", 3600, function () use ($id) {
+            $response = $this->client->get("films/{$id}");
 
-            if ($httpResponse->failed()) {
-                throw new \Exception("Failed to fetch movie: {$httpResponse->status()}");
+            if ($response === null) {
+                throw new \Exception("Failed to fetch movie: {$id}");
             }
 
-            return $httpResponse->json();
+            return $response;
         });
 
-        return MovieDto::fromSwapi($response);
+        return MovieDto::fromSwapi($data);
     }
 
     /**
      * Get a movie by URL from SWAPI.
+     *
+     * @param  string  $url
+     * @return MovieDto|null
      */
     public function getMovie(string $url): ?MovieDto
     {
-        $response = Http::get($url);
+        // Extract endpoint from full URL
+        $baseUrl = config('services.swapi.base_url', 'https://swapi.dev/api');
+        $endpoint = str_replace($baseUrl.'/', '', $url);
 
-        if (! $response->successful()) {
+        $data = $this->client->get($endpoint);
+
+        if ($data === null) {
             return null;
         }
 
-        return MovieDto::fromSwapi($response->json());
+        return MovieDto::fromSwapi($data);
     }
 }

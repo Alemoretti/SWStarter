@@ -68,7 +68,8 @@ After copying `.env.example` to `.env`, configure the following:
 - `CACHE_STORE=redis`
 
 ### SWAPI (IMPORTANT)
-- `SWAPI_BASE_URL=https://swapi.dev/api` (or `https://swapi.info/api` if swapi.dev is unavailable)
+- `SWAPI_BASE_URL=https://swapi.dev/api` (or `https://swapi.info/api` if swapi.dev is unavailable).
+
 I left swapi.info uncommented in the env.example because swapi.dev was having certificate issues until the day I finished this assignment and asked via email. Since I didn't get a response yet, I recommend using `swapi.info`. The project deals with both responses from them. The only difference is that swapi.dev returns a results key and the swapi.info returns the direct array.
 
 ## Accessing the Application
