@@ -25,6 +25,7 @@ class StatisticsService
 
     /**
      * Get top 5 queries with percentages.
+     * Groups by both query and type to show separate entries for people and movies.
      *
      * @return array<int, array<string, mixed>>
      */
@@ -36,10 +37,16 @@ class StatisticsService
 
         $total = $queries->count();
 
-        $queryCounts = $queries->groupBy('query')
+        // Group by both query and type to separate people and movies searches
+        $queryCounts = $queries->groupBy(function ($query) {
+            return $query->query.'|'.$query->type;
+        })
             ->map(function ($group) use ($total) {
+                $first = $group->first();
+
                 return [
-                    'query' => $group->first()->query,
+                    'query' => $first->query,
+                    'type' => $first->type,
                     'count' => $group->count(),
                     'percentage' => round(($group->count() / $total) * 100, 2),
                 ];

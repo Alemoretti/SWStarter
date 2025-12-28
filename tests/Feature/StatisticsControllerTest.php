@@ -33,6 +33,7 @@ class StatisticsControllerTest extends TestCase
                     'top_queries' => [
                         [
                             'query' => 'luke',
+                            'type' => 'people',
                             'count' => 2,
                         ],
                     ],
@@ -45,7 +46,7 @@ class StatisticsControllerTest extends TestCase
         // Create cached statistics
         SearchStatistic::create([
             'top_queries' => [
-                ['query' => 'test', 'count' => 5, 'percentage' => 50.0],
+                ['query' => 'test', 'type' => 'people', 'count' => 5, 'percentage' => 50.0],
             ],
             'avg_response_time' => 150.75,
             'popular_hour' => 14,
@@ -58,7 +59,7 @@ class StatisticsControllerTest extends TestCase
             ->assertJson([
                 'data' => [
                     'top_queries' => [
-                        ['query' => 'test', 'count' => 5, 'percentage' => 50.0],
+                        ['query' => 'test', 'type' => 'people', 'count' => 5, 'percentage' => 50.0],
                     ],
                     'avg_response_time' => '150.75',
                     'popular_hour' => 14,
