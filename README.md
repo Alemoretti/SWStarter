@@ -140,6 +140,11 @@ docker compose exec app php artisan schedule:work
   - `avg_response_time`: Average API response time
   - `popular_hour`: Most popular hour of day for searches
 
+Statistics response example:
+
+<img width="373" height="760" alt="image" src="https://github.com/user-attachments/assets/51086dfa-c932-4781-84ac-763612e04c3e" />
+
+
 ## Development
 
 ### Running Tests
@@ -176,6 +181,11 @@ docker compose exec app npm run lint:fix
 ```bash
 docker compose exec app npm run dev
 ```
+
+## Screenshot
+
+<img width="1154" height="757" alt="image" src="https://github.com/user-attachments/assets/768c6409-7e62-47c8-bfd4-d47d67f55114" />
+
 
 ## Troubleshooting
 
