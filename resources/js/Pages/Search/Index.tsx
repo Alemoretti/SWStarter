@@ -34,7 +34,7 @@ export default function SearchIndex({
     resultsCount,
     pagination: initialPagination 
 }: Props) {
-    const { query, type, page, errors, isLoading, setQuery, setType, handleSubmit, handlePageChange } = useSearchForm({
+    const { query, type, errors, isLoading, setQuery, setType, handleSubmit, handlePageChange } = useSearchForm({
         initialQuery,
         initialType,
         initialPage: initialPagination?.current_page ?? 1,
