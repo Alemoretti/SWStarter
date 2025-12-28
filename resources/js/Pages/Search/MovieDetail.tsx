@@ -28,7 +28,7 @@ function MovieDetail({ movie, error }: Props) {
     return (
         <div className="min-h-screen bg-gray-100">
             <Header />
-            <div className="container mx-auto px-4 py-8" style={{ maxWidth: '1200px' }}>
+            <div className="container mx-auto px-4" style={{ maxWidth: '1200px' }}>
                 <div className="bg-white rounded-lg shadow p-8 max-w-4xl mx-auto">
                     <h2 className="text-xl font-semibold text-gray-900 mb-6">
                         {movie.title}

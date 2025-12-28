@@ -1,5 +1,6 @@
 import React, { Component, ReactNode } from 'react';
 import { Link } from '@inertiajs/react';
+import Header from './Header';
 
 interface Props {
     children: ReactNode;
@@ -40,7 +41,8 @@ export class ErrorBoundary extends Component<Props, State> {
 
             return (
                 <div className="min-h-screen bg-gray-100">
-                    <div className="container mx-auto px-4 py-8">
+                    <Header />
+                    <div className="container mx-auto px-4">
                         <div className="bg-white rounded-lg shadow p-8 text-center">
                             <h1 className="text-2xl font-bold text-gray-900 mb-4">Something went wrong</h1>
                             <p className="text-gray-600 mb-4">

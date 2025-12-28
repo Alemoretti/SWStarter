@@ -91,7 +91,7 @@ export default function SearchIndex({
     return (
         <div className="min-h-screen bg-gray-100">
             <Header />
-            <div className="container mx-auto px-4 py-8" style={{ maxWidth: '1200px' }}>
+            <div className="container mx-auto px-4" style={{ maxWidth: '1200px' }}>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Left Panel - Search Form */}
