@@ -24,7 +24,7 @@ class StatisticsControllerTest extends TestCase
             ->assertJsonStructure([
                 'data' => [
                     'top_queries',
-                    'avg_response_time',
+                    'avg_response_time_ms',
                     'popular_hour',
                 ],
             ])
@@ -61,7 +61,7 @@ class StatisticsControllerTest extends TestCase
                     'top_queries' => [
                         ['query' => 'test', 'type' => 'people', 'count' => 5, 'percentage' => 50.0],
                     ],
-                    'avg_response_time' => '150.75',
+                    'avg_response_time_ms' => '150.75',
                     'popular_hour' => 14,
                 ],
             ]);
@@ -75,7 +75,7 @@ class StatisticsControllerTest extends TestCase
             ->assertJson([
                 'data' => [
                     'top_queries' => [],
-                    'avg_response_time' => null,
+                    'avg_response_time_ms' => null,
                     'popular_hour' => null,
                 ],
             ]);
