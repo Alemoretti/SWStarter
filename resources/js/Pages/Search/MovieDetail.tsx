@@ -42,7 +42,7 @@ function MovieDetail({ movie, error }: Props) {
                             </h3>
                             <div className="w-full h-px mt-2 mb-4" style={{ backgroundColor: 'var(--color-pinkish-grey)' }} />
                             <div>
-                                <div className="text-sm text-black">
+                                <div className="text-base text-black">
                                     <p className="mt-2 whitespace-pre-line text-base">
                                         {movie.opening_crawl}
                                     </p>
