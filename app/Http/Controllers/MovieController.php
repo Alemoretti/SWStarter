@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Resources\MovieResource;
 use App\Services\SwapiService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 
 class MovieController extends Controller
 {
@@ -15,19 +18,46 @@ class MovieController extends Controller
     /**
      * Get movie details by ID.
      */
-    public function show(int $id): JsonResponse
+    public function show(Request $request, int $id): JsonResponse|InertiaResponse
     {
         try {
             $movie = $this->swapiService->getMovieById($id);
-
-            return response()->json([
-                'data' => new MovieResource($movie),
+    
+            // Return JSON for API requests
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'data' => new MovieResource($movie),
+                ]);
+            }
+    
+            // Fetch character details for web requests
+            $characters = [];
+            if (!$request->wantsJson()) {
+                foreach ($movie->characters as $characterUrl) {
+                    $character = $this->swapiService->getCharacter(
+                        $this->extractIdFromUrl($characterUrl)
+                    );
+                    if ($character) {
+                        $characters[] = [
+                            'id' => $character->id,
+                            'name' => $character->name,
+                        ];
+                    }
+                }
+            }
+    
+            // Return Inertia response for web requests
+            $movieData = (new MovieResource($movie))->resolve();
+            $movieData['characters'] = $characters;
+    
+            return Inertia::render('Search/MovieDetail', [
+                'movie' => $movieData,
             ]);
         } catch (\Exception $e) {
             $statusCode = 404;
             $message = 'Movie not found';
-
-            // Extract status code from exception message (format: "Failed to fetch movie: 500")
+    
+            // Extract status code from exception message
             if (preg_match('/: (\d+)$/', $e->getMessage(), $matches)) {
                 $statusCode = (int) $matches[1];
                 if ($statusCode >= 500) {
@@ -36,10 +66,26 @@ class MovieController extends Controller
                     $message = 'Movie not found';
                 }
             }
-
-            return response()->json([
+    
+            // Return JSON for API requests
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'error' => $message,
+                ], $statusCode);
+            }
+    
+            // Return Inertia response with error for web requests
+            return Inertia::render('Search/MovieDetail', [
                 'error' => $message,
-            ], $statusCode);
+            ])->toResponse($request)->setStatusCode($statusCode);
         }
+    }
+    
+    private function extractIdFromUrl(string $url): int
+    {
+        if (preg_match('/\/(\d+)\/?$/', $url, $matches)) {
+            return (int) $matches[1];
+        }
+        return 0;
     }
 }
