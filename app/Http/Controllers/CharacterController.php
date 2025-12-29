@@ -29,15 +29,13 @@ class CharacterController extends Controller
             // Fetch movie details for web requests
             $movies = [];
             if (! $request->wantsJson()) {
-                foreach ($character->films as $filmUrl) {
-                    $movie = $this->swapiService->getMovie($filmUrl);
-                    if ($movie) {
-                        $movies[] = [
-                            'id' => $movie->id,
-                            'title' => $movie->title,
-                        ];
-                    }
-                }
+                $movieDtos = $this->swapiService->getMovies($character->films);
+                $movies = array_map(function ($movie) {
+                    return [
+                        'id' => $movie->id,
+                        'title' => $movie->title,
+                    ];
+                }, $movieDtos);
             }
 
             // Return JSON for API requests
