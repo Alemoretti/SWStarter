@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\HandlesSwapiErrors;
 use App\Http\Resources\MovieResource;
 use App\Services\SwapiService;
 use Illuminate\Http\JsonResponse;
@@ -11,6 +12,7 @@ use Inertia\Response as InertiaResponse;
 
 class MovieController extends Controller
 {
+    use HandlesSwapiErrors;
     public function __construct(
         private SwapiService $swapiService
     ) {}
@@ -53,32 +55,8 @@ class MovieController extends Controller
             return Inertia::render('MovieDetail', [
                 'movie' => $movieData,
             ]);
-        } catch (\Exception $e) {
-            $statusCode = 404;
-            $message = 'Movie not found';
-
-            // Extract status code from exception message
-            // Format: "SWAPI request failed with status {code}: {url}"
-            if (preg_match('/SWAPI request failed with status (\d+)/', $e->getMessage(), $matches)) {
-                $statusCode = (int) $matches[1];
-                if ($statusCode >= 500) {
-                    $message = 'External API error';
-                } elseif ($statusCode === 404) {
-                    $message = 'Movie not found';
-                }
-            }
-
-            // Return JSON for API requests
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'error' => $message,
-                ], $statusCode);
-            }
-
-            // Return Inertia response with error for web requests
-            return Inertia::render('MovieDetail', [
-                'error' => $message,
-            ])->toResponse($request)->setStatusCode($statusCode);
+        } catch (\Throwable $e) {
+            return $this->handleSwapiError($e, 'Movie', 'MovieDetail', $request);
         }
     }
 

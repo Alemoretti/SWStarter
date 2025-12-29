@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\HandlesSwapiErrors;
 use App\Http\Resources\CharacterResource;
 use App\Services\SwapiService;
 use Illuminate\Http\JsonResponse;
@@ -11,6 +12,7 @@ use Inertia\Response as InertiaResponse;
 
 class CharacterController extends Controller
 {
+    use HandlesSwapiErrors;
     public function __construct(
         private SwapiService $swapiService
     ) {}
@@ -51,32 +53,8 @@ class CharacterController extends Controller
             return Inertia::render('CharacterDetail', [
                 'character' => $characterData,
             ]);
-        } catch (\Exception $e) {
-            $statusCode = 404;
-            $message = 'Character not found';
-
-            // Extract status code from exception message
-            // Format: "SWAPI request failed with status {code}: {url}"
-            if (preg_match('/SWAPI request failed with status (\d+)/', $e->getMessage(), $matches)) {
-                $statusCode = (int) $matches[1];
-                if ($statusCode >= 500) {
-                    $message = 'External API error';
-                } elseif ($statusCode === 404) {
-                    $message = 'Character not found';
-                }
-            }
-
-            // Return JSON for API requests
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'error' => $message,
-                ], $statusCode);
-            }
-
-            // Return Inertia response with error for web requests
-            return Inertia::render('CharacterDetail', [
-                'error' => $message,
-            ])->toResponse($request)->setStatusCode($statusCode);
+        } catch (\Throwable $e) {
+            return $this->handleSwapiError($e, 'Character', 'CharacterDetail', $request);
         }
     }
 }

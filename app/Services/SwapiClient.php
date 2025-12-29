@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\SwapiException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -20,7 +21,7 @@ class SwapiClient
      * @param  array<string, mixed>  $queryParams
      * @return array<string, mixed>|null
      *
-     * @throws \Exception When the request fails, includes status code in message
+     * @throws SwapiException When the request fails, includes status code in message
      */
     public function get(string $endpoint, array $queryParams = []): ?array
     {
@@ -37,7 +38,10 @@ class SwapiClient
                 'body' => $response->body(),
             ]);
 
-            throw new \Exception("SWAPI request failed with status {$statusCode}: {$url}");
+            throw new SwapiException(
+                "SWAPI request failed: {$url}",
+                $statusCode
+            );
         }
 
         return $response->json();
