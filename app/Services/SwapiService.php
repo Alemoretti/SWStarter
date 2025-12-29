@@ -159,4 +159,79 @@ class SwapiService
             return null;
         }
     }
+
+    /**
+     * Get multiple movies by URLs concurrently.
+     *
+     * @param  array<string>  $urls
+     * @return array<int, MovieDto>
+     */
+    public function getMovies(array $urls): array
+    {
+        if (empty($urls)) {
+            return [];
+        }
+
+        $baseUrl = config('services.swapi.base_url', 'https://swapi.dev/api');
+        
+        $responses = \Illuminate\Support\Facades\Http::pool(function ($pool) use ($urls, $baseUrl) {
+            return collect($urls)->map(function ($url) use ($pool, $baseUrl) {
+                $endpoint = str_replace($baseUrl.'/', '', $url);
+                return $pool->get($baseUrl.'/'.$endpoint);
+            });
+        });
+
+        $movies = [];
+        foreach ($responses as $response) {
+            if ($response->successful()) {
+                try {
+                    $movie = MovieDto::fromSwapi($response->json());
+                    if ($movie) {
+                        $movies[] = $movie;
+                    }
+                } catch (\Exception $e) {
+                    continue;
+                }
+            }
+        }
+
+        return $movies;
+    }
+
+    /**
+     * Get multiple characters by IDs concurrently.
+     *
+     * @param  array<int>  $ids
+     * @return array<int, CharacterDto>
+     */
+    public function getCharacters(array $ids): array
+    {
+        if (empty($ids)) {
+            return [];
+        }
+
+        $baseUrl = config('services.swapi.base_url', 'https://swapi.dev/api');
+        
+        $responses = \Illuminate\Support\Facades\Http::pool(function ($pool) use ($ids, $baseUrl) {
+            return collect($ids)->map(function ($id) use ($pool, $baseUrl) {
+                return $pool->get("{$baseUrl}/people/{$id}");
+            });
+        });
+
+        $characters = [];
+        foreach ($responses as $response) {
+            if ($response->successful()) {
+                try {
+                    $character = CharacterDto::fromSwapi($response->json());
+                    if ($character) {
+                        $characters[] = $character;
+                    }
+                } catch (\Exception $e) {
+                    continue;
+                }
+            }
+        }
+
+        return $characters;
+    }
 }

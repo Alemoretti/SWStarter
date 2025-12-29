@@ -36,17 +36,14 @@ class MovieController extends Controller
             // Fetch character details for web requests
             $characters = [];
             if (! $request->wantsJson()) {
-                foreach ($movie->characters as $characterUrl) {
-                    $character = $this->swapiService->getCharacter(
-                        $this->extractIdFromUrl($characterUrl)
-                    );
-                    if ($character) {
-                        $characters[] = [
-                            'id' => $character->id,
-                            'name' => $character->name,
-                        ];
-                    }
-                }
+                $characterIds = $this->extractIdsFromUrls($movie->characters);
+                $characterDtos = $this->swapiService->getCharacters($characterIds);
+                $characters = array_map(function ($character) {
+                    return [
+                        'id' => $character->id,
+                        'name' => $character->name,
+                    ];
+                }, $characterDtos);
             }
 
             // Return Inertia response for web requests
@@ -61,12 +58,21 @@ class MovieController extends Controller
         }
     }
 
-    private function extractIdFromUrl(string $url): int
+    /**
+     * Extract IDs from character URLs.
+     *
+     * @param  array<string>  $urls
+     * @return array<int>
+     */
+    private function extractIdsFromUrls(array $urls): array
     {
-        if (preg_match('/\/(\d+)\/?$/', $url, $matches)) {
-            return (int) $matches[1];
-        }
-
-        return 0;
+        return array_filter(
+            array_map(function ($url) {
+                if (preg_match('/\/(\d+)\/?$/', $url, $matches)) {
+                    return (int) $matches[1];
+                }
+                return null;
+            }, $urls)
+        );
     }
 }
