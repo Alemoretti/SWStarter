@@ -37,4 +37,3 @@ trait HandlesSwapiErrors
         ])->toResponse($request)->setStatusCode($statusCode);
     }
 }
-

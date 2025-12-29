@@ -13,6 +13,7 @@ use Inertia\Response as InertiaResponse;
 class MovieController extends Controller
 {
     use HandlesSwapiErrors;
+
     public function __construct(
         private SwapiService $swapiService
     ) {}
