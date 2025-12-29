@@ -1,28 +1,16 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useReducer, useEffect } from 'react';
 import { Activity } from 'react';
 import { useSearchForm } from '@/features/search/hooks/useSearchForm';
 import SearchResultsPanel from '@/features/search/components/SearchResultsPanel';
 import SearchPanel from '@/features/search/components/SearchPanel';
 import Header from '@/components/layout/Header';
-
-interface Result {
-    id: number;
-    name?: string;
-    title?: string;
-    [key: string]: unknown;
-}
-
-interface PaginationData {
-    current_page: number;
-    per_page: number;
-    total: number;
-    total_pages: number;
-}
+import { SearchResult, PaginationData, SearchType } from '@/types/api';
+import { searchResultsReducer, initialSearchResultsState } from '@/features/search/reducers/searchResultsReducer';
 
 interface Props {
     query?: string;
-    type?: 'people' | 'movies';
-    results?: Result[];
+    type?: SearchType;
+    results?: SearchResult[];
     resultsCount?: number;
     pagination?: PaginationData;
 }
@@ -40,46 +28,47 @@ export default function SearchIndex({
         initialPage: initialPagination?.current_page ?? 1,
     });
 
-    // Preserve results for both search types using local state
-    const [peopleResults, setPeopleResults] = useState<Result[] | undefined>(
-        initialType === 'people' ? results : undefined
-    );
-    const [peopleResultsCount, setPeopleResultsCount] = useState<number | undefined>(
-        initialType === 'people' ? resultsCount : undefined
-    );
-    const [peoplePagination, setPeoplePagination] = useState<PaginationData | undefined>(
-        initialType === 'people' ? initialPagination : undefined
-    );
-    const [moviesResults, setMoviesResults] = useState<Result[] | undefined>(
-        initialType === 'movies' ? results : undefined
-    );
-    const [moviesResultsCount, setMoviesResultsCount] = useState<number | undefined>(
-        initialType === 'movies' ? resultsCount : undefined
-    );
-    const [moviesPagination, setMoviesPagination] = useState<PaginationData | undefined>(
-        initialType === 'movies' ? initialPagination : undefined
+    const [resultsState, dispatch] = useReducer(
+        searchResultsReducer,
+        {
+            ...initialSearchResultsState,
+            people: {
+                results: initialType === 'people' ? results : undefined,
+                count: initialType === 'people' ? resultsCount : undefined,
+                pagination: initialType === 'people' ? initialPagination : undefined,
+            },
+            movies: {
+                results: initialType === 'movies' ? results : undefined,
+                count: initialType === 'movies' ? resultsCount : undefined,
+                pagination: initialType === 'movies' ? initialPagination : undefined,
+            },
+        }
     );
 
-    // Update the appropriate results state when new results arrive from server
     useEffect(() => {
         if (results === undefined) {
             return;
         }
 
-        // Use setTimeout to defer state updates and avoid cascading renders
-        const timeoutId = setTimeout(() => {
-            if (type === 'people') {
-                setPeopleResults(results);
-                setPeopleResultsCount(resultsCount);
-                setPeoplePagination(initialPagination);
-            } else {
-                setMoviesResults(results);
-                setMoviesResultsCount(resultsCount);
-                setMoviesPagination(initialPagination);
-            }
-        }, 0);
-
-        return () => clearTimeout(timeoutId);
+        if (type === 'people') {
+            dispatch({
+                type: 'SET_PEOPLE_RESULTS',
+                payload: {
+                    results,
+                    count: resultsCount ?? 0,
+                    pagination: initialPagination,
+                },
+            });
+        } else {
+            dispatch({
+                type: 'SET_MOVIES_RESULTS',
+                payload: {
+                    results,
+                    count: resultsCount ?? 0,
+                    pagination: initialPagination,
+                },
+            });
+        }
     }, [results, resultsCount, type, initialPagination]);
 
     // Memoize placeholder text to avoid recalculation
@@ -112,20 +101,20 @@ export default function SearchIndex({
                         <Activity mode={type === 'people' ? 'visible' : 'hidden'}>
                             <SearchResultsPanel
                                 type="people"
-                                results={peopleResults}
-                                resultsCount={peopleResultsCount}
+                                results={resultsState.people.results}
+                                resultsCount={resultsState.people.count}
                                 isLoading={isLoading && type === 'people'}
-                                pagination={peoplePagination}
+                                pagination={resultsState.people.pagination}
                                 onPageChange={handlePageChange}
                             />
                         </Activity>
                         <Activity mode={type === 'movies' ? 'visible' : 'hidden'}>
                             <SearchResultsPanel
                                 type="movies"
-                                results={moviesResults}
-                                resultsCount={moviesResultsCount}
+                                results={resultsState.movies.results}
+                                resultsCount={resultsState.movies.count}
                                 isLoading={isLoading && type === 'movies'}
-                                pagination={moviesPagination}
+                                pagination={resultsState.movies.pagination}
                                 onPageChange={handlePageChange}
                             />
                         </Activity>

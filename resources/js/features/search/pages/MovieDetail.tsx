@@ -2,18 +2,7 @@ import { memo } from 'react';
 import { Link } from '@inertiajs/react';
 import ErrorDisplay from '@/components/ui/ErrorDisplay';
 import Header from '@/components/layout/Header';
-
-interface Character {
-    id: number;
-    name: string;
-}
-
-interface Movie {
-    id: number;
-    title: string;
-    opening_crawl: string;
-    characters?: Character[];
-}
+import { Movie } from '@/types/api';
 
 interface Props {
     movie?: Movie;

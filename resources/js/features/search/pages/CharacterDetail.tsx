@@ -2,24 +2,7 @@ import { useMemo, memo } from 'react';
 import { Link } from '@inertiajs/react';
 import ErrorDisplay from '@/components/ui/ErrorDisplay';
 import Header from '@/components/layout/Header';
-
-interface Movie {
-    id: number;
-    title: string;
-}
-
-interface Character {
-    id: number;
-    name: string;
-    birth_year: string | null;
-    gender: string;
-    eye_color: string;
-    hair_color: string;
-    height: number | null;
-    mass: number | null;
-    films: string[];
-    movies?: Movie[];
-}
+import { Character } from '@/types/api';
 
 interface Props {
     character?: Character;

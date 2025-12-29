@@ -2,24 +2,11 @@ import { memo } from 'react';
 import LoadingState from '@/components/ui/LoadingState';
 import SearchResultItem from './SearchResultItem';
 import Pagination from '@/components/pagination';
-
-interface Result {
-    id: number;
-    name?: string;
-    title?: string;
-    [key: string]: unknown;
-}
-
-interface PaginationData {
-    current_page: number;
-    per_page: number;
-    total: number;
-    total_pages: number;
-}
+import { SearchResult, PaginationData, SearchType } from '@/types/api';
 
 interface SearchResultsPanelProps {
-    type: 'people' | 'movies';
-    results?: Result[];
+    type: SearchType;
+    results?: SearchResult[];
     resultsCount?: number;
     isLoading: boolean;
     pagination?: PaginationData;
