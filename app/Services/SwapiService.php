@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\DTOs\CharacterDto;
 use App\DTOs\MovieDto;
+use App\Exceptions\SwapiException;
 use Illuminate\Support\Facades\Cache;
 
 class SwapiService
@@ -108,7 +109,7 @@ class SwapiService
     /**
      * Get a single character by ID.
      *
-     * @throws \Exception
+     * @throws SwapiException
      */
     public function getCharacter(int $id): CharacterDto
     {
@@ -118,8 +119,7 @@ class SwapiService
             });
 
             return CharacterDto::fromSwapi($data);
-        } catch (\Exception $e) {
-            // Preserve the original exception message which contains the status code
+        } catch (SwapiException $e) {
             throw $e;
         }
     }
@@ -127,7 +127,7 @@ class SwapiService
     /**
      * Get a single movie by ID.
      *
-     * @throws \Exception
+     * @throws SwapiException
      */
     public function getMovieById(int $id): MovieDto
     {
@@ -137,8 +137,7 @@ class SwapiService
             });
 
             return MovieDto::fromSwapi($data);
-        } catch (\Exception $e) {
-            // Preserve the original exception message which contains the status code
+        } catch (SwapiException $e) {
             throw $e;
         }
     }

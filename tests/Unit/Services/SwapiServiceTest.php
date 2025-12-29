@@ -4,6 +4,7 @@ namespace Tests\Unit\Services;
 
 use App\DTOs\CharacterDto;
 use App\DTOs\MovieDto;
+use App\Exceptions\SwapiException;
 use App\Services\SwapiService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -137,10 +138,14 @@ class SwapiServiceTest extends TestCase
 
         $service = SwapiService::make();
 
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessageMatches('/SWAPI request failed with status 404/');
+        $this->expectException(SwapiException::class);
 
-        $service->getCharacter(1);
+        try {
+            $service->getCharacter(1);
+        } catch (SwapiException $e) {
+            $this->assertEquals(404, $e->statusCode);
+            throw $e;
+        }
     }
 
     public function test_get_movie_returns_movie_dto(): void
