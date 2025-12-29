@@ -15,7 +15,7 @@ class QueueStatisticsRecomputation
      */
     public function handle(SearchPerformed $_event): void
     {
-        $debounceSeconds = config('statistics.job_debounce_seconds', 60);
+        $debounceSeconds = (int) config('statistics.job_debounce_seconds', 60);
 
         if (Cache::has(self::CACHE_KEY)) {
             return;
