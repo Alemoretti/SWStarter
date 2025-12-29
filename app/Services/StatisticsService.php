@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\SearchQuery;
-use Illuminate\Support\Collection;
 
 class StatisticsService
 {
@@ -14,78 +13,76 @@ class StatisticsService
      */
     public function compute(): array
     {
-        $queries = SearchQuery::all();
+        $total = SearchQuery::count();
+
+        if ($total === 0) {
+            return $this->emptyStatistics();
+        }
 
         return [
-            'top_queries' => $this->getTopQueries($queries),
-            'avg_response_time' => $this->getAverageResponseTime($queries),
-            'popular_hour' => $this->getPopularHour($queries),
+            'top_queries' => $this->getTopQueries($total),
+            'avg_response_time' => $this->getAverageResponseTime(),
+            'popular_hour' => $this->getPopularHour(),
         ];
     }
 
     /**
-     * Get top 5 queries with percentages.
-     * Groups by both query and type to show separate entries for people and movies.
+     * Get empty statistics structure.
      *
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
-    private function getTopQueries(Collection $queries): array
+    private function emptyStatistics(): array
     {
-        if ($queries->isEmpty()) {
-            return [];
-        }
-
-        $total = $queries->count();
-
-        // Group by both query and type to separate people and movies searches
-        $queryCounts = $queries->groupBy(function ($query) {
-            return $query->query.'|'.$query->type;
-        })
-            ->map(function ($group) use ($total) {
-                $first = $group->first();
-
-                return [
-                    'query' => $first->query,
-                    'type' => $first->type,
-                    'count' => $group->count(),
-                    'percentage' => round(($group->count() / $total) * 100, 2),
-                ];
-            })
-            ->sortByDesc('count')
-            ->take(5)
-            ->values()
-            ->toArray();
-
-        return $queryCounts;
+        return [
+            'top_queries' => [],
+            'avg_response_time' => null,
+            'popular_hour' => null,
+        ];
     }
 
     /**
-     * Get average response time.
+     * Get top 5 queries with percentages using database aggregation.
+     *
+     * @return array<int, array<string, mixed>>
      */
-    private function getAverageResponseTime(Collection $queries): ?float
+    private function getTopQueries(int $total): array
     {
-        if ($queries->isEmpty()) {
-            return null;
-        }
+        $results = SearchQuery::selectRaw('query, type, COUNT(*) as count')
+            ->groupBy('query', 'type')
+            ->orderByDesc('count')
+            ->limit(5)
+            ->get();
 
-        $avg = $queries->avg('response_time_ms');
+        return $results->map(function ($item) use ($total) {
+            return [
+                'query' => $item->query,
+                'type' => $item->type,
+                'count' => $item->count,
+                'percentage' => round(($item->count / $total) * 100, 2),
+            ];
+        })->toArray();
+    }
+
+    /**
+     * Get average response time using database aggregation.
+     */
+    private function getAverageResponseTime(): ?float
+    {
+        $avg = SearchQuery::avg('response_time_ms');
 
         return $avg ? round((float) $avg, 2) : null;
     }
 
     /**
-     * Get most popular hour of day.
+     * Get most popular hour of day using database aggregation.
      */
-    private function getPopularHour(Collection $queries): ?int
+    private function getPopularHour(): ?int
     {
-        if ($queries->isEmpty()) {
-            return null;
-        }
+        $result = SearchQuery::selectRaw('HOUR(created_at) as hour, COUNT(*) as count')
+            ->groupBy('hour')
+            ->orderByDesc('count')
+            ->first();
 
-        $hourCounts = $queries->groupBy(function ($query) {
-            return $query->created_at->hour;
-        })->map->count();
-
-        return $hourCounts->sortDesc()->keys()->first();
+        return $result ? (int) $result->hour : null;
     }
 }
