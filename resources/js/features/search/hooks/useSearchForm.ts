@@ -81,11 +81,8 @@ export function useSearchForm({
     const handleTypeChange = useCallback((newType: SearchType) => {
         setType(newType);
         setPage(1);
-        
-        if (query.trim()) {
-            performSearch(query, newType, 1);
-        }
-    }, [query, performSearch]);
+        setQuery('');
+    }, []);
 
     return {
         query,
