@@ -37,6 +37,17 @@ RUN mkdir -p /var/www/.config/psysh && \
 # Install Redis PHP extension
 RUN pecl install redis && docker-php-ext-enable redis
 
+# Copy composer files and install dependencies (as root, will fix permissions later)
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
+
+# Copy application code
+COPY --chown=www-data:www-data . .
+
+# Complete Composer autoloader generation and fix vendor permissions
+RUN composer dump-autoload --optimize && \
+    chown -R www-data:www-data /var/www/html/vendor
+
 # Copy existing application directory permissions
 RUN chown -R www-data:www-data /var/www/html
 

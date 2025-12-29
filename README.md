@@ -28,22 +28,27 @@ cp .env.example .env
 docker compose up -d --build
 ```
 
-4. Generate application key:
+4. Install PHP dependencies:
+```bash
+docker compose exec app composer install
+```
+
+5. Generate application key:
 ```bash
 docker compose exec app php artisan key:generate
 ```
 
-5. Run migrations:
+6. Run migrations:
 ```bash
 docker compose exec app php artisan migrate
 ```
 
-6. Install frontend dependencies:
+7. Install frontend dependencies:
 ```bash
 docker compose exec app npm install
 ```
 
-7. Build frontend assets:
+8. Build frontend assets:
 ```bash
 docker compose exec app npm run build
 ```
