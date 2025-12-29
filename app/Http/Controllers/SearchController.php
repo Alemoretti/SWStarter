@@ -6,6 +6,7 @@ use App\Events\SearchPerformed;
 use App\Http\Requests\SearchRequest;
 use App\Http\Resources\CharacterResource;
 use App\Http\Resources\MovieResource;
+use App\Http\Responses\ApiResponse;
 use App\Models\SearchQuery;
 use App\Services\SwapiService;
 use Illuminate\Http\JsonResponse;
@@ -29,7 +30,7 @@ class SearchController extends Controller
         $query = $validated['query'];
         $type = $validated['type'];
         $page = $validated['page'] ?? 1;
-        $perPage = 10;
+        $perPage = config('search.per_page');
 
         if ($type === 'people') {
             $results = $this->swapiService->searchPeople($query);
@@ -63,14 +64,11 @@ class SearchController extends Controller
 
         // Return Inertia response for web requests, JSON for API
         if ($request->wantsJson()) {
-            return response()->json([
-                'data' => $resources,
-                'meta' => [
-                    'current_page' => $page,
-                    'per_page' => $perPage,
-                    'total' => $totalResults,
-                    'total_pages' => $totalPages,
-                ],
+            return ApiResponse::success($resources, [
+                'current_page' => $page,
+                'per_page' => $perPage,
+                'total' => $totalResults,
+                'total_pages' => $totalPages,
             ]);
         }
 
