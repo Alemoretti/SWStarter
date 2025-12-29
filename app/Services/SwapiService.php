@@ -173,10 +173,11 @@ class SwapiService
         }
 
         $baseUrl = config('services.swapi.base_url', 'https://swapi.dev/api');
-        
+
         $responses = \Illuminate\Support\Facades\Http::pool(function ($pool) use ($urls, $baseUrl) {
             return collect($urls)->map(function ($url) use ($pool, $baseUrl) {
                 $endpoint = str_replace($baseUrl.'/', '', $url);
+
                 return $pool->get($baseUrl.'/'.$endpoint);
             });
         });
@@ -211,7 +212,7 @@ class SwapiService
         }
 
         $baseUrl = config('services.swapi.base_url', 'https://swapi.dev/api');
-        
+
         $responses = \Illuminate\Support\Facades\Http::pool(function ($pool) use ($ids, $baseUrl) {
             return collect($ids)->map(function ($id) use ($pool, $baseUrl) {
                 return $pool->get("{$baseUrl}/people/{$id}");

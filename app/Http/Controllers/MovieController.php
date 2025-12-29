@@ -71,6 +71,7 @@ class MovieController extends Controller
                 if (preg_match('/\/(\d+)\/?$/', $url, $matches)) {
                     return (int) $matches[1];
                 }
+
                 return null;
             }, $urls)
         );
