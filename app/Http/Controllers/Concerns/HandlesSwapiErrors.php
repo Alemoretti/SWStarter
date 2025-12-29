@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Concerns;
 
 use App\Exceptions\SwapiException;
+use App\Http\Responses\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -27,9 +28,7 @@ trait HandlesSwapiErrors
         }
 
         if ($request->wantsJson()) {
-            return response()->json([
-                'error' => $message,
-            ], $statusCode);
+            return ApiResponse::error($message, $statusCode);
         }
 
         return Inertia::render($pageName, [

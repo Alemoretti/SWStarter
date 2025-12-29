@@ -14,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(SwapiService::class, function ($app) {
-            $baseUrl = config('services.swapi.base_url', 'https://swapi.dev/api');
+            $baseUrl = config('swapi.base_url', 'https://swapi.dev/api');
             $client = new SwapiClient($baseUrl);
 
             return new SwapiService($client);

@@ -9,18 +9,21 @@ use Illuminate\Support\Facades\Cache;
 
 class SwapiService
 {
-    private const CACHE_TTL = 3600; // 1 hour
-
     public function __construct(
         private readonly SwapiClient $client
     ) {}
+
+    private function cacheKey(string $type, string $identifier): string
+    {
+        return "swapi:{$type}:{$identifier}";
+    }
 
     /**
      * Create a new instance with default client.
      */
     public static function make(): self
     {
-        $baseUrl = config('services.swapi.base_url', 'https://swapi.dev/api');
+        $baseUrl = config('swapi.base_url', 'https://swapi.dev/api');
         $client = new SwapiClient($baseUrl);
 
         return new self($client);
@@ -34,8 +37,8 @@ class SwapiService
     public function searchPeople(string $query): array
     {
         return Cache::remember(
-            "swapi.people.search.{$query}",
-            self::CACHE_TTL,
+            $this->cacheKey('people', "search:{$query}"),
+            config('swapi.cache_ttl'),
             fn () => $this->fetchPeople($query)
         );
     }
@@ -74,8 +77,8 @@ class SwapiService
     public function searchFilms(string $query): array
     {
         return Cache::remember(
-            "swapi.films.search.{$query}",
-            self::CACHE_TTL,
+            $this->cacheKey('films', "search:{$query}"),
+            config('swapi.cache_ttl'),
             fn () => $this->fetchFilms($query)
         );
     }
@@ -114,7 +117,7 @@ class SwapiService
     public function getCharacter(int $id): CharacterDto
     {
         try {
-            $data = Cache::remember("swapi_people_{$id}", 3600, function () use ($id) {
+            $data = Cache::remember($this->cacheKey('people', "id:{$id}"), config('swapi.cache_ttl'), function () use ($id) {
                 return $this->client->get("people/{$id}");
             });
 
@@ -132,7 +135,7 @@ class SwapiService
     public function getMovieById(int $id): MovieDto
     {
         try {
-            $data = Cache::remember("swapi_films_{$id}", 3600, function () use ($id) {
+            $data = Cache::remember($this->cacheKey('films', "id:{$id}"), config('swapi.cache_ttl'), function () use ($id) {
                 return $this->client->get("films/{$id}");
             });
 
@@ -149,7 +152,7 @@ class SwapiService
     {
         try {
             // Extract endpoint from full URL
-            $baseUrl = config('services.swapi.base_url', 'https://swapi.dev/api');
+            $baseUrl = config('swapi.base_url', 'https://swapi.dev/api');
             $endpoint = str_replace($baseUrl.'/', '', $url);
 
             $data = $this->client->get($endpoint);
@@ -172,7 +175,7 @@ class SwapiService
             return [];
         }
 
-        $baseUrl = config('services.swapi.base_url', 'https://swapi.dev/api');
+        $baseUrl = config('swapi.base_url', 'https://swapi.dev/api');
 
         $responses = \Illuminate\Support\Facades\Http::pool(function ($pool) use ($urls, $baseUrl) {
             return collect($urls)->map(function ($url) use ($pool, $baseUrl) {
@@ -211,7 +214,7 @@ class SwapiService
             return [];
         }
 
-        $baseUrl = config('services.swapi.base_url', 'https://swapi.dev/api');
+        $baseUrl = config('swapi.base_url', 'https://swapi.dev/api');
 
         $responses = \Illuminate\Support\Facades\Http::pool(function ($pool) use ($ids, $baseUrl) {
             return collect($ids)->map(function ($id) use ($pool, $baseUrl) {

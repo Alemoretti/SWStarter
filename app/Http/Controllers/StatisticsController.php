@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DTOs\StatisticsDto;
 use App\Http\Resources\StatisticsResource;
+use App\Http\Responses\ApiResponse;
 use App\Models\SearchStatistic;
 use App\Services\StatisticsService;
 use Illuminate\Http\JsonResponse;
@@ -22,7 +23,7 @@ class StatisticsController extends Controller
         // Try to get cached statistics first
         $cached = SearchStatistic::latest('computed_at')->first();
 
-        if ($cached && $cached->computed_at->isAfter(now()->subMinutes(5))) {
+        if ($cached && $cached->computed_at->isAfter(now()->subMinutes(config('statistics.cache_ttl_minutes')))) {
             // Return cached statistics if less than 5 minutes old
             $dto = new StatisticsDto(
                 topQueries: $cached->top_queries,
@@ -39,8 +40,6 @@ class StatisticsController extends Controller
             );
         }
 
-        return response()->json([
-            'data' => new StatisticsResource($dto),
-        ]);
+        return ApiResponse::success(new StatisticsResource($dto));
     }
 }
