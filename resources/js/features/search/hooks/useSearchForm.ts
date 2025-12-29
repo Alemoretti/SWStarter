@@ -1,21 +1,22 @@
 import { useState, useCallback } from 'react';
 import { router } from '@inertiajs/react';
 import { searchSchema } from '@/features/search/schemas/searchSchema';
+import { SearchType } from '@/types/api';
 
 interface UseSearchFormOptions {
     initialQuery?: string;
-    initialType?: 'people' | 'movies';
+    initialType?: SearchType;
     initialPage?: number;
 }
 
 interface UseSearchFormReturn {
     query: string;
-    type: 'people' | 'movies';
+    type: SearchType;
     page: number;
     errors: Record<string, string>;
     isLoading: boolean;
     setQuery: (query: string) => void;
-    setType: (type: 'people' | 'movies') => void;
+    setType: (type: SearchType) => void;
     setPage: (page: number) => void;
     handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
     handlePageChange: (page: number) => void;
@@ -30,12 +31,12 @@ export function useSearchForm({
     initialPage = 1,
 }: UseSearchFormOptions = {}): UseSearchFormReturn {
     const [query, setQuery] = useState(initialQuery);
-    const [type, setType] = useState<'people' | 'movies'>(initialType);
+    const [type, setType] = useState<SearchType>(initialType);
     const [page, setPage] = useState(initialPage);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isLoading, setIsLoading] = useState(false);
 
-    const performSearch = useCallback((searchQuery: string, searchType: 'people' | 'movies', searchPage: number) => {
+    const performSearch = useCallback((searchQuery: string, searchType: SearchType, searchPage: number) => {
         setErrors({});
 
         // Validate with Zod
@@ -77,6 +78,15 @@ export function useSearchForm({
         performSearch(query, type, newPage);
     }, [query, type, performSearch]);
 
+    const handleTypeChange = useCallback((newType: SearchType) => {
+        setType(newType);
+        setPage(1);
+        
+        if (query.trim()) {
+            performSearch(query, newType, 1);
+        }
+    }, [query, performSearch]);
+
     return {
         query,
         type,
@@ -84,7 +94,7 @@ export function useSearchForm({
         errors,
         isLoading,
         setQuery,
-        setType,
+        setType: handleTypeChange,
         setPage,
         handleSubmit,
         handlePageChange,
