@@ -69,8 +69,19 @@ After copying `.env.example` to `.env`, configure the following:
 
 ### SWAPI (IMPORTANT)
 - `SWAPI_BASE_URL=https://swapi.dev/api` (or `https://swapi.info/api` if swapi.dev is unavailable).
+- `SWAPI_CACHE_TTL=3600` (Cache TTL in seconds, default: 3600)
+- `SWAPI_TIMEOUT=10` (Request timeout in seconds, default: 10)
+- `SWAPI_RETRY_TIMES=3` (Number of retry attempts, default: 3)
+- `SWAPI_RETRY_DELAY=100` (Retry delay in milliseconds, default: 100)
 
 I left swapi.info uncommented in the env.example because swapi.dev was having certificate issues until the day I finished this assignment and asked via email. Since I didn't get a response yet, I recommend using `swapi.info`. The project deals with both responses from them. The only difference is that swapi.dev returns a results key and the swapi.info returns the direct array.
+
+### Search Configuration
+- `SEARCH_PER_PAGE=10` (Number of results per page, default: 10)
+
+### Statistics Configuration
+- `STATISTICS_CACHE_TTL=5` (Statistics cache TTL in minutes, default: 5)
+- `STATISTICS_JOB_DEBOUNCE_SECONDS=60` (Debounce period for statistics recomputation job, default: 60)
 
 ## Accessing the Application
 
@@ -120,8 +131,9 @@ docker compose exec app php artisan schedule:work
 - **Parameters**: 
   - `query` (string, required): Search term
   - `type` (string, required): `people` or `movies`
-- **Response**: JSON with search results
-- **Example**: `/api/v1/search?query=luke&type=people`
+  - `page` (integer, optional): Page number (default: 1)
+- **Response**: JSON with search results and pagination metadata
+- **Example**: `/api/v1/search?query=luke&type=people&page=1`
 
 ### Character Details
 - **Endpoint**: `GET /api/v1/characters/{id}`
@@ -136,8 +148,8 @@ docker compose exec app php artisan schedule:work
 ### Statistics
 - **Endpoint**: `GET /api/v1/statistics`
 - **Response**: JSON with search statistics
-  - `top_queries`: Top 5 search queries with percentages
-  - `avg_response_time`: Average API response time
+  - `top_queries`: Top 5 search queries with percentages and type (people/movies)
+  - `avg_response_time_ms`: Average API response time in milliseconds
   - `popular_hour`: Most popular hour of day for searches
 
 Statistics response example:
